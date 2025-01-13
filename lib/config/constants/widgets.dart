@@ -42,27 +42,27 @@ Widget nextButton({VoidCallback? onTap}) {
   );
 }
 
-Widget buildButton(int index, String buttonText) {
-  return Obx(
-    () => ElevatedButton(
-      onPressed: () {
-        controller.selectButton(index);
-      },
-      style: ElevatedButton.styleFrom(
-        backgroundColor: controller.selectedButtonIndex.value == index
-            ? AppColors.orange
-            : AppColors.background,
-        padding: const EdgeInsets.symmetric(vertical: 15, horizontal: 140),
-        shape: RoundedRectangleBorder(
-          borderRadius: BorderRadius.circular(10),
-          side: const BorderSide(color: Colors.white), 
-        ),
-      ),
-      child: Text(
-        buttonText,
-        style: const TextStyle(
-            color: AppColors.white, fontSize: 18, fontFamily: Fonts.gilroyBold),
-      ),
-    ),
-  );
-}
+// Widget buildButton(int index, String buttonText) {
+//   return Obx(
+//     () => ElevatedButton(
+//       onPressed: () {
+//         controller.selectButton(index, q);
+//       },
+//       style: ElevatedButton.styleFrom(
+//         backgroundColor: controller.selectedButtonIndex.value == index
+//             ? AppColors.orange
+//             : AppColors.background,
+//         padding: const EdgeInsets.symmetric(vertical: 15, horizontal: 140),
+//         shape: RoundedRectangleBorder(
+//           borderRadius: BorderRadius.circular(10),
+//           side: const BorderSide(color: Colors.white), 
+//         ),
+//       ),
+//       child: Text(
+//         buttonText,
+//         style: const TextStyle(
+//             color: AppColors.white, fontSize: 18, fontFamily: Fonts.gilroyBold),
+//       ),
+//     ),
+//   );
+// }

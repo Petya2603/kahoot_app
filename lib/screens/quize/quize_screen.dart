@@ -102,9 +102,9 @@ class QuizeScreen extends StatelessWidget {
                         color: AppColors.orange,
                       ),
                     ),
-                    const Text(
-                      "What is this thing?",
-                      style: TextStyle(
+                    Text(
+                      controller.questions[0],
+                      style: const TextStyle(
                           fontFamily: Fonts.gilroySemiBold,
                           fontSize: 28,
                           color: AppColors.background),
@@ -116,11 +116,37 @@ class QuizeScreen extends StatelessWidget {
             const SizedBox(
               height: 20,
             ),
-            buildButton(0, 'Book'),
-            const SizedBox(height: 20),
-            buildButton(1, 'Pencil'),
-            const SizedBox(height: 20),
-            buildButton(2, 'Eraser'),
+            for (int i = 0; i < controller.options[0].length; i++)
+              Container(
+                margin: const EdgeInsets.only(top: 10),
+                child: ElevatedButton(
+                  onPressed: () {
+                    controller.selectedButtonIndex.value == -1
+                        ? () {
+                            controller.selectButton(i, 0);
+                          }
+                        : null;
+                  },
+                  style: ElevatedButton.styleFrom(
+                    backgroundColor: controller.selectedButtonIndex == i
+                        ? AppColors.orange
+                        : AppColors.background,
+                    padding: const EdgeInsets.symmetric(
+                        vertical: 15, horizontal: 140),
+                    shape: RoundedRectangleBorder(
+                      borderRadius: BorderRadius.circular(10),
+                      side: const BorderSide(color: Colors.white),
+                    ),
+                  ),
+                  child: Text(
+                    controller.options[0][i],
+                    style: const TextStyle(
+                        color: AppColors.white,
+                        fontSize: 18,
+                        fontFamily: Fonts.gilroyBold),
+                  ),
+                ),
+              ),
           ],
         ));
   }

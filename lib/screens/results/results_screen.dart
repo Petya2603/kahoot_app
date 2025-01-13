@@ -40,6 +40,7 @@ class ResultsScreen extends StatelessWidget {
                 ),
               ),
               const SizedBox(height: 35),
+              TextButton(onPressed: () {}, child: const Text("UPDATE")),
               ElevatedButton(
                 onPressed: () {
                   Get.offAll(const QuizeScreen());

@@ -114,7 +114,7 @@ class _HomeScreenState extends State<HomeScreen> {
                         nextButton(
                           onTap: () {
                             if (_formKey.currentState!.validate()) {
-                              Get.to(const StartScreen());
+                              Get.to(StartScreen());
                             }
                           },
                         ),
@@ -156,7 +156,7 @@ class _HomeScreenState extends State<HomeScreen> {
     final scanData = await Get.to(() => const QRScanScreen());
     if (scanData != null) {
       if (_validateQRCode(scanData)) {
-        Get.to(const StartScreen());
+        Get.to(StartScreen());
       } else {
         Get.snackbar('Error', 'Invalid QR code');
       }

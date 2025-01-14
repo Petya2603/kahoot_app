@@ -2,7 +2,6 @@ import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:kahoot_app/screens/quize/controller/quize_controller.dart';
 import '../../config/constants/constants.dart';
-import '../../config/constants/widgets.dart';
 
 class QuizeScreen extends StatelessWidget {
   const QuizeScreen({super.key});

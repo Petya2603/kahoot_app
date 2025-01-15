@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
+import 'package:get/get_state_manager/get_state_manager.dart';
 import 'package:kahoot_app/screens/quize/controller/quize_controller.dart';
 import '../../config/constants/constants.dart';
 
@@ -53,25 +54,25 @@ class QuizeScreen extends StatelessWidget {
                   ),
                 ),
               ),
-              const Column(
-                crossAxisAlignment: CrossAxisAlignment.center,
-                children: [
-                  Text(
-                    "Question",
-                    style: TextStyle(
-                      color: Colors.white,
-                      fontSize: 16,
-                    ),
-                  ),
-                  Text(
-                    "1",
-                    style: TextStyle(
-                        color: Colors.white,
-                        fontSize: 16,
-                        fontWeight: FontWeight.bold),
-                  ),
-                ],
-              ),
+              Obx(() => Column(
+                    crossAxisAlignment: CrossAxisAlignment.center,
+                    children: [
+                      const Text(
+                        "Question",
+                        style: TextStyle(
+                          color: Colors.white,
+                          fontSize: 16,
+                        ),
+                      ),
+                      Text(
+                        "${controller.currentQuestionIndex.value + 1}/${controller.questions.length}",
+                        style: const TextStyle(
+                            color: Colors.white,
+                            fontSize: 16,
+                            fontWeight: FontWeight.bold),
+                      ),
+                    ],
+                  )),
             ],
           ),
         ),
@@ -101,13 +102,16 @@ class QuizeScreen extends StatelessWidget {
                         color: AppColors.orange,
                       ),
                     ),
-                    Text(
-                      controller.questions[0],
-                      style: const TextStyle(
-                          fontFamily: Fonts.gilroySemiBold,
-                          fontSize: 28,
-                          color: AppColors.background),
-                    )
+                    Obx(
+                      () => Text(
+                        controller
+                            .questions[controller.currentQuestionIndex.value],
+                        style: const TextStyle(
+                            fontFamily: Fonts.gilroySemiBold,
+                            fontSize: 28,
+                            color: AppColors.background),
+                      ),
+                    ),
                   ],
                 ),
               ),
@@ -115,37 +119,43 @@ class QuizeScreen extends StatelessWidget {
             const SizedBox(
               height: 20,
             ),
-            for (int i = 0; i < controller.options[0].length; i++)
-              Container(
-                margin: const EdgeInsets.only(top: 10),
-                child: ElevatedButton(
-                  onPressed: () {
-                    controller.selectedButtonIndex.value == -1
-                        ? () {
-                            controller.selectButton(i, 0);
-                          }
-                        : null;
-                  },
-                  style: ElevatedButton.styleFrom(
-                    backgroundColor: controller.selectedButtonIndex == i
-                        ? AppColors.orange
-                        : AppColors.background,
-                    padding: const EdgeInsets.symmetric(
-                        vertical: 15, horizontal: 140),
-                    shape: RoundedRectangleBorder(
-                      borderRadius: BorderRadius.circular(10),
-                      side: const BorderSide(color: Colors.white),
+            Obx(() {
+              return Column(
+                  children: List.generate(
+                      controller.options[controller.currentQuestionIndex.value]
+                          .length, (index) {
+                return Container(
+                  margin: const EdgeInsets.only(top: 10),
+                  child: ElevatedButton(
+                    onPressed: () {
+                      if (controller.selectedButtonIndex.value == -1) {
+                        controller.selectedButton(index);
+                      }
+                    },
+                    style: ElevatedButton.styleFrom(
+                      backgroundColor:
+                          controller.selectedButtonIndex.value == index
+                              ? AppColors.orange
+                              : AppColors.background,
+                      padding: const EdgeInsets.symmetric(
+                          vertical: 15, horizontal: 140),
+                      shape: RoundedRectangleBorder(
+                        borderRadius: BorderRadius.circular(10),
+                        side: const BorderSide(color: Colors.white),
+                      ),
+                    ),
+                    child: Text(
+                      controller.options[controller.currentQuestionIndex.value]
+                          [index],
+                      style: const TextStyle(
+                          color: AppColors.white,
+                          fontSize: 18,
+                          fontFamily: Fonts.gilroyBold),
                     ),
                   ),
-                  child: Text(
-                    controller.options[0][i],
-                    style: const TextStyle(
-                        color: AppColors.white,
-                        fontSize: 18,
-                        fontFamily: Fonts.gilroyBold),
-                  ),
-                ),
-              ),
+                );
+              }));
+            }),
           ],
         ));
   }

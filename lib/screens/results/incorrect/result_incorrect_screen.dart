@@ -1,10 +1,9 @@
 import 'package:flutter/material.dart';
-import 'package:get/get.dart';
-import 'package:kahoot_app/screens/quize/quize_screen.dart';
-import '../../config/constants/constants.dart';
+import '../../../config/constants/constants.dart';
 
-class ResultsScreen extends StatelessWidget {
-  const ResultsScreen({super.key});
+class ResultIncorrectScreen extends StatelessWidget {
+  const ResultIncorrectScreen({super.key, required this.onNext});
+  final VoidCallback onNext;
 
   @override
   Widget build(BuildContext context) {
@@ -21,7 +20,7 @@ class ResultsScreen extends StatelessWidget {
             mainAxisAlignment: MainAxisAlignment.center,
             children: [
               const Text(
-                "Nice Work",
+                "Incorrect Answer",
                 style: TextStyle(
                   color: AppColors.white,
                   fontFamily: Fonts.gilroyBold,
@@ -29,10 +28,9 @@ class ResultsScreen extends StatelessWidget {
                 ),
               ),
               const SizedBox(height: 20),
-              const Image(image: AssetImage(Assets.check)),
               const SizedBox(height: 20),
               const Text(
-                "You Earned 10 pts",
+                "Better luck next time!",
                 style: TextStyle(
                   color: AppColors.white,
                   fontSize: 18,
@@ -41,9 +39,7 @@ class ResultsScreen extends StatelessWidget {
               ),
               const SizedBox(height: 35),
               ElevatedButton(
-                onPressed: () {
-                  Get.offAll(const QuizeScreen());
-                },
+                onPressed: onNext,
                 style: ElevatedButton.styleFrom(
                   backgroundColor: AppColors.orange,
                   padding:
@@ -54,7 +50,7 @@ class ResultsScreen extends StatelessWidget {
                   ),
                 ),
                 child: const Text(
-                  "Next Stage",
+                  "Next Question",
                   style: TextStyle(
                     color: AppColors.white,
                     fontSize: 18,

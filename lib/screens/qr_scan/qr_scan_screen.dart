@@ -1,6 +1,6 @@
 // ignore_for_file: library_private_types_in_public_api
-
 import 'package:flutter/material.dart';
+import 'package:kahoot_app/screens/qr_scan/widgets/scan_back_button.dart';
 import 'package:qr_code_scanner/qr_code_scanner.dart';
 import 'package:get/get.dart';
 import '../../config/constants/constants.dart';
@@ -41,31 +41,7 @@ class _QRScanScreenState extends State<QRScanScreen> {
               ),
             ),
           ),
-          Expanded(
-            flex: 1,
-            child: Center(
-              child: ElevatedButton(
-                onPressed: () {
-                  Get.back();
-                },
-                style: ElevatedButton.styleFrom(
-                  padding: const EdgeInsets.symmetric(
-                    vertical: 12,
-                    horizontal: 83,
-                  ),
-                  backgroundColor: AppColors.background,
-                ),
-                child: const Text(
-                  "Back",
-                  style: TextStyle(
-                    fontSize: 18,
-                    fontFamily: Fonts.gilroyBold,
-                    color: AppColors.white,
-                  ),
-                ),
-              ),
-            ),
-          )
+          const ScanBackButton(),
         ],
       ),
     );

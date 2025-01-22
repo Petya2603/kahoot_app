@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:kahoot_app/config/constants/constants.dart';
-import '../../screens/quize/controller/quize_controller.dart';
+import '../../screens/questions/controller/quize_controller.dart';
 
 final QuizeScreenController controller = Get.put(QuizeScreenController());
 Widget buildImage(String asset, double width, double height,

@@ -8,10 +8,6 @@ class ResultCorrectScreen extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(
-        automaticallyImplyLeading: false,
-        backgroundColor: AppColors.background,
-      ),
       backgroundColor: AppColors.background,
       body: Center(
         child: Container(

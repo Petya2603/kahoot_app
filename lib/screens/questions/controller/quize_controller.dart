@@ -40,7 +40,7 @@ class QuizeScreenController extends GetxController {
         progressValue.value = remainingSeconds.value / 20;
       } else {
         _timer?.cancel();
-        Get.offAll(() => ResultIncorrectScreen(onNext: _goToNextQuestion));
+        Get.to(() => ResultIncorrectScreen(onNext: _goToNextQuestion));
       }
     });
   }
@@ -74,7 +74,16 @@ class QuizeScreenController extends GetxController {
       Get.back();
     } else {
       _timer?.cancel();
-      Get.offAll(() => const ReitingScreen());
+      Get.to(() => ReitingScreen(scores: [
+            {'name': 'Perman', 'score': 95},
+            {'name': 'Eziz', 'score': 80},
+            {'name': 'Kerwen', 'score': 70},
+            {'name': 'Aman', 'score': 65},
+            {'name': 'Cary', 'score': 60},
+            {'name': 'Gowher', 'score': 73},
+            {'name': 'Serdar', 'score': 66},
+            {'name': 'Altyn', 'score': 61},
+          ]));
     }
   }
 

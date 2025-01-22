@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
-import 'package:kahoot_app/screens/quize/quize_screen.dart';
+import 'package:kahoot_app/screens/questions/questions_screen.dart';
 import '../../config/constants/constants.dart';
 import '../../config/constants/widgets.dart';
 

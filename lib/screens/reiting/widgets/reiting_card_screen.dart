@@ -10,39 +10,40 @@ class ReitingCardScreen extends StatelessWidget {
   final int rank;
   @override
   Widget build(BuildContext context) {
-    return Card(
-      elevation: 5,
-      shadowColor: Colors.white,
-      margin: const EdgeInsets.symmetric(vertical: 10),
-      shape: RoundedRectangleBorder(
-        borderRadius: BorderRadius.circular(15),
+    return ListTile(
+      leading: _buildRankCircle(),
+      title: Text(
+        name,
+        style: const TextStyle(
+          fontWeight: FontWeight.bold,
+          fontSize: 16,
+        ),
       ),
-      child: ListTile(
-        leading: CircleAvatar(
-          backgroundColor: AppColors.background,
-          child: Text(
-            "$rank",
-            style: const TextStyle(
-              color: Colors.white,
-              fontWeight: FontWeight.bold,
-              fontSize: 16,
-            ),
-          ),
+      trailing: Text(
+        "$score pts",
+        style: const TextStyle(
+          fontWeight: FontWeight.bold,
+          color: AppColors.background,
+          fontSize: 14,
         ),
-        title: Text(
-          name,
-          style: const TextStyle(
-            fontWeight: FontWeight.bold,
-            fontSize: 16,
-          ),
-        ),
-        trailing: Text(
-          "$score pts",
-          style: const TextStyle(
-            fontWeight: FontWeight.bold,
-            color: AppColors.background,
-            fontSize: 14,
-          ),
+      ),
+    );
+  }
+
+  Widget _buildRankCircle() {
+    return Container(
+      width: 32,
+      height: 32,
+      alignment: Alignment.center,
+      decoration: BoxDecoration(
+        color: Colors.grey[300]!,
+        shape: BoxShape.circle,
+      ),
+      child: Text(
+        '$rank',
+        style: const TextStyle(
+          color: Colors.black,
+          fontWeight: FontWeight.bold,
         ),
       ),
     );

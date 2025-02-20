@@ -17,24 +17,20 @@ class ReitingScreen extends StatelessWidget {
         automaticallyImplyLeading: false,
       ),
       backgroundColor: AppColors.background,
-      body: Padding(
-        padding: const EdgeInsets.only(left: 15, right: 15),
-        child: Column(
-          children: [
-            Expanded(
-              child: ListView.builder(
-                itemCount: scores.length,
-                itemBuilder: (context, index) {
-                  final score = scores[index];
-                  return ReitingCardScreen(
-                      rank: index + 1,
-                      name: score['name'],
-                      score: score['score']);
-                },
-              ),
+      body: ListView.builder(
+        itemCount: scores.length,
+        itemBuilder: (context, index) {
+          final score = scores[index];
+          return Container(
+            margin: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
+            decoration: BoxDecoration(
+              color: Colors.grey[100]!,
+              borderRadius: BorderRadius.circular(12),
             ),
-          ],
-        ),
+            child: ReitingCardScreen(
+                rank: index + 1, name: score['name'], score: score['score']),
+          );
+        },
       ),
     );
   }

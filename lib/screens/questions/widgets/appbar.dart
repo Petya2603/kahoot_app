@@ -46,25 +46,13 @@ class AppBarTitle extends StatelessWidget {
             ),
           ),
         ),
-        Obx(() => Column(
-              crossAxisAlignment: CrossAxisAlignment.center,
-              children: [
-                const Text(
-                  "Question",
-                  style: TextStyle(
-                    color: Colors.white,
-                    fontSize: 16,
-                  ),
-                ),
-                Text(
-                  "${controller.currentQuestionIndex.value + 1}/${controller.questions.length}",
-                  style: const TextStyle(
-                      color: Colors.white,
-                      fontSize: 16,
-                      fontWeight: FontWeight.bold),
-                ),
-              ],
-            )),
+        Obx(
+          () => Text(
+            "${controller.currentQuestionIndex.value + 1} of ${controller.questions.length}",
+            style: const TextStyle(
+                color: Colors.white, fontSize: 16, fontWeight: FontWeight.bold),
+          ),
+        ),
       ],
     );
   }

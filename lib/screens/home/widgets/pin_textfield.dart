@@ -9,17 +9,17 @@ class PinTextfield extends StatelessWidget {
   Widget build(BuildContext context) {
     return TextFormField(
       controller: controller,
+      keyboardType: TextInputType.number,
       decoration: const InputDecoration(
         hintText: "Enter Pin",
         hintStyle: TextStyle(
           fontSize: 18,
-          color: AppColors.background,
           fontFamily: Fonts.gilroyBold,
         ),
         focusedBorder: OutlineInputBorder(
           borderSide: BorderSide(
             color: AppColors.background,
-            width: 3.0,
+            width: 2.0,
             style: BorderStyle.solid,
           ),
           borderRadius: BorderRadii.borderRadius15,
@@ -28,7 +28,7 @@ class PinTextfield extends StatelessWidget {
           borderRadius: BorderRadii.borderRadius15,
           borderSide: BorderSide(
             color: AppColors.background,
-            width: 3.0,
+            width: 2.0,
             style: BorderStyle.solid,
           ),
         ),
@@ -36,7 +36,7 @@ class PinTextfield extends StatelessWidget {
           borderRadius: BorderRadii.borderRadius15,
           borderSide: BorderSide(
             color: AppColors.red,
-            width: 3.0,
+            width: 2.0,
             style: BorderStyle.solid,
           ),
         ),
@@ -48,12 +48,9 @@ class PinTextfield extends StatelessWidget {
         ),
       ),
       textAlign: TextAlign.center,
-      obscureText: true,
       validator: (value) {
         if (value == null || value.isEmpty) {
           return 'Please enter a pin';
-        } else if (value.length != 4) {
-          return 'Pin must be 4 digits';
         }
         return null;
       },

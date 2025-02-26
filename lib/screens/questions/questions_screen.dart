@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:kahoot_app/screens/questions/widgets/appbar.dart';
+import 'package:kahoot_app/screens/questions/widgets/bottom_nav_bar.dart';
 import 'package:kahoot_app/screens/questions/widgets/question_card.dart';
 import 'package:kahoot_app/screens/questions/widgets/question_option.dart';
 import '../../config/constants/constants.dart';
@@ -24,6 +25,10 @@ class QuizeScreen extends StatelessWidget {
             QuestionOption(),
           ],
         ),
+      ),
+      bottomNavigationBar: BottomAppBar(
+        color: AppColors.white,
+        child: BottomNavBarNameQuize(),
       ),
     );
   }

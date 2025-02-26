@@ -50,4 +50,5 @@ class AppColors {
   static const Color white = Color.fromRGBO(255, 255, 255, 1);
   static const Color blue = Color.fromRGBO(170, 141, 255, 1);
   static const Color red = Color.fromRGBO(173, 38, 41, 1);
+  static const Color black = Color.fromRGBO(36, 35, 35, 1);
 }

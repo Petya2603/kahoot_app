@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import '../../../config/constants/constants.dart';
+import '../../questions/widgets/bottom_nav_bar.dart';
 
 class ResultCorrectScreen extends StatelessWidget {
   const ResultCorrectScreen({super.key, required this.onNext});
@@ -58,6 +59,10 @@ class ResultCorrectScreen extends StatelessWidget {
             ],
           ),
         ),
+      ),
+      bottomNavigationBar: BottomAppBar(
+        color: AppColors.white,
+        child: BottomNavBarNameQuize(),
       ),
     );
   }

@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import '../../../config/constants/constants.dart';
+import '../../questions/widgets/bottom_nav_bar.dart';
 
 class ResultIncorrectScreen extends StatelessWidget {
   const ResultIncorrectScreen({super.key, required this.onNext});
@@ -16,7 +17,7 @@ class ResultIncorrectScreen extends StatelessWidget {
             mainAxisAlignment: MainAxisAlignment.center,
             children: [
               const Text(
-                "Incorrect Answer",
+                "Incorrect",
                 style: TextStyle(
                   color: AppColors.white,
                   fontFamily: Fonts.gilroyBold,
@@ -24,6 +25,7 @@ class ResultIncorrectScreen extends StatelessWidget {
                 ),
               ),
               const SizedBox(height: 20),
+              const Image(image: AssetImage(Assets.check)),
               const SizedBox(height: 20),
               const Text(
                 "Better luck next time!",
@@ -57,6 +59,10 @@ class ResultIncorrectScreen extends StatelessWidget {
             ],
           ),
         ),
+      ),
+      bottomNavigationBar: BottomAppBar(
+        color: AppColors.white,
+        child: BottomNavBarNameQuize(),
       ),
     );
   }

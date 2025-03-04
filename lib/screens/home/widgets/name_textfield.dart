@@ -4,6 +4,7 @@ import '../../../config/constants/constants.dart';
 
 class NameTextField extends StatelessWidget {
   const NameTextField({super.key, this.controller});
+  // ignore: prefer_typing_uninitialized_variables
   final controller;
   @override
   Widget build(BuildContext context) {

@@ -2,7 +2,6 @@
 import 'package:flutter/material.dart';
 import 'package:kahoot_app/screens/qr_scan/widgets/scan_back_button.dart';
 import 'package:qr_code_scanner/qr_code_scanner.dart';
-import 'package:get/get.dart';
 import '../../config/constants/constants.dart';
 
 class QRScanScreen extends StatefulWidget {
@@ -50,8 +49,10 @@ class _QRScanScreenState extends State<QRScanScreen> {
   void _onQRViewCreated(QRViewController controller) {
     this.controller = controller;
     controller.scannedDataStream.listen((scanData) {
-      controller.pauseCamera();
-      Get.back(result: scanData.code);
+      if (scanData.code != null) {
+        // ignore: use_build_context_synchronously
+        Navigator.pop(context, scanData.code);
+      }
     });
   }
 }

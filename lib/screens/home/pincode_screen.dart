@@ -1,25 +1,70 @@
 import 'package:flutter/material.dart';
-import 'package:get/get.dart';
 import 'package:kahoot_app/config/constants/constants.dart';
+import 'package:kahoot_app/screens/home/widgets/name_textfield.dart';
 import 'package:kahoot_app/screens/home/widgets/pin_textfield.dart';
-import 'package:kahoot_app/screens/home/widgets/qr_scan_button.dart';
-import 'package:kahoot_app/screens/start_test/start_test_screen.dart';
-
 import '../../config/constants/widgets.dart';
+import '../../services/participant_api_service.dart';
 import '../qr_scan/qr_scan_screen.dart';
+import '../waiting_screem/waiting_screen.dart';
 
 class HomeScreen extends StatefulWidget {
   const HomeScreen({super.key});
 
   @override
-  // ignore: library_private_types_in_public_api
   _HomeScreenState createState() => _HomeScreenState();
 }
 
 class _HomeScreenState extends State<HomeScreen> {
   final GlobalKey<FormState> _formKey = GlobalKey<FormState>();
   final TextEditingController pinController = TextEditingController();
-  final GlobalKey qrKey = GlobalKey(debugLabel: 'QR');
+  final TextEditingController nameController = TextEditingController();
+  final ParticipantService participantService = ParticipantService();
+  Future<void> joinQuiz() async {
+    final String nickname = nameController.text;
+    final String pinCode = pinController.text;
+    try {
+      var response = await participantService.joinQuiz(
+        nickname: nickname,
+        pinCode: pinCode,
+      );
+      if (response['status'] == 'success') {
+        Navigator.push(
+          context,
+          MaterialPageRoute(
+            builder: (context) => WaitingScreen(
+              quizID: response['data']['quizID'],
+              avatar: response['data']['avatar'],
+              nickname: response['data']['nickname'],
+              score: response['data']['score'],
+            ),
+          ),
+        );
+      } else {
+        // ignore: use_build_context_synchronously
+        ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(content: Text(response['message'])),
+        );
+      }
+    } catch (e) {
+      // ignore: use_build_context_synchronously
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(content: Text('Eror: $e')),
+      );
+    }
+  }
+
+  Future<void> _scanQRCode() async {
+    final scannedPin = await Navigator.push<String>(
+      context,
+      MaterialPageRoute(
+        builder: (context) => const QRScanScreen(),
+      ),
+    );
+
+    if (scannedPin != null) {
+      pinController.text = scannedPin;
+    }
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -29,29 +74,13 @@ class _HomeScreenState extends State<HomeScreen> {
         title: Row(
           mainAxisAlignment: MainAxisAlignment.spaceBetween,
           children: [
-            Container(
-              decoration: BoxDecoration(
-                  borderRadius: BorderRadius.circular(20),
-                  border: Border.all(width: 1, color: AppColors.white)),
-              child: IconButton(
-                  onPressed: () async {
-                    await _scanQRCode();
-                  },
-                  icon: Icon(
-                    Icons.qr_code,
-                    color: AppColors.white,
-                  )),
+            IconButton(
+              onPressed: _scanQRCode,
+              icon: const Icon(Icons.qr_code, color: AppColors.white),
             ),
-            Container(
-              decoration: BoxDecoration(
-                  borderRadius: BorderRadius.circular(20),
-                  border: Border.all(width: 1, color: AppColors.white)),
-              child: IconButton(
-                  onPressed: () {},
-                  icon: Icon(
-                    Icons.language,
-                    color: AppColors.white,
-                  )),
+            IconButton(
+              onPressed: () {},
+              icon: const Icon(Icons.language, color: AppColors.white),
             )
           ],
         ),
@@ -91,17 +120,11 @@ class _HomeScreenState extends State<HomeScreen> {
                               fontFamily: Fonts.gilroyBold),
                         ),
                         const SizedBox(height: 15),
-                        PinTextfield(
-                          controller: pinController,
-                        ),
+                        PinTextfield(controller: pinController),
+                        const SizedBox(height: 10),
+                        NameTextField(controller: nameController),
                         const SizedBox(height: 20),
-                        nextButton(
-                          onTap: () {
-                            if (_formKey.currentState!.validate()) {
-                              Get.off(StartScreen());
-                            }
-                          },
-                        ),
+                        nextButton(onTap: joinQuiz),
                       ],
                     ),
                   ),
@@ -112,20 +135,5 @@ class _HomeScreenState extends State<HomeScreen> {
         ),
       ),
     );
-  }
-
-  Future<void> _scanQRCode() async {
-    final scanData = await Get.to(() => const QRScanScreen());
-    if (scanData != null) {
-      if (_validateQRCode(scanData)) {
-        Get.to(StartScreen());
-      } else {
-        Get.snackbar('Error', 'Invalid QR code');
-      }
-    }
-  }
-
-  bool _validateQRCode(String scanData) {
-    return scanData == 'expected_value';
   }
 }

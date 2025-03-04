@@ -3,7 +3,6 @@ import 'package:get/get.dart';
 
 import '../../../config/constants/constants.dart';
 import '../../qr_scan/qr_scan_screen.dart';
-import '../../start_test/start_test_screen.dart';
 
 class QRScanButton extends StatelessWidget {
   const QRScanButton({super.key});
@@ -36,7 +35,9 @@ class QRScanButton extends StatelessWidget {
     final scanData = await Get.to(() => const QRScanScreen());
     if (scanData != null) {
       if (_validateQRCode(scanData)) {
-        Get.to(StartScreen());
+        // Get.to(StartScreen(
+        //   pinCode: '',
+        // ));
       } else {
         Get.snackbar('Error', 'Invalid QR code');
       }

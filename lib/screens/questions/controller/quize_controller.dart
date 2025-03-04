@@ -1,6 +1,6 @@
 import 'package:get/get.dart';
 import 'dart:async';
-import '../../reiting/reiting_screen.dart';
+import '../../../models/question_model.dart';
 import '../../results/correct/results_correct_screen.dart';
 import '../../results/incorrect/result_incorrect_screen.dart';
 
@@ -10,25 +10,15 @@ class QuizeScreenController extends GetxController {
   Timer? _timer;
   var selectedButtonIndex = (-1).obs;
   var currentQuestionIndex = 0.obs;
-  List<String> questions = [
-    "What is this thing?",
-    "What is the capital of France?",
-    "What is 2+2?"
-  ];
-  List<List<String>> options = [
-    ["Book", "Pencil", "Eraser"],
-    ["Paris", "London", "Berlin"],
-    ["3", "4", "5"],
-  ];
-  List<int> correctAnswerIndex = [1, 0, 1];
+  List<Question> questions = [];
 
   @override
   void onInit() {
     super.onInit();
-    _startTimer();
+    startTimer();
   }
 
-  void _startTimer() {
+  void startTimer() {
     if (currentQuestionIndex.value >= questions.length) {
       _timer?.cancel();
       return;
@@ -54,7 +44,7 @@ class QuizeScreenController extends GetxController {
   void selectedButton(int index) {
     _timer?.cancel();
     selectedButtonIndex.value = index;
-    if (_validateAnswer(index)) {
+    if (index == 1) {
       Future.delayed(const Duration(seconds: 1), () {
         Get.to(() => ResultCorrectScreen(onNext: _goToNextQuestion));
       });
@@ -70,24 +60,10 @@ class QuizeScreenController extends GetxController {
       currentQuestionIndex.value++;
       selectedButtonIndex.value = -1;
       remainingSeconds.value = 20;
-      _startTimer();
+      startTimer();
       Get.back();
     } else {
       _timer?.cancel();
-      Get.to(() => ReitingScreen(scores: [
-            {'name': 'Perman', 'score': 95},
-            {'name': 'Eziz', 'score': 80},
-            {'name': 'Kerwen', 'score': 70},
-            {'name': 'Aman', 'score': 65},
-            {'name': 'Cary', 'score': 60},
-            {'name': 'Gowher', 'score': 73},
-            {'name': 'Serdar', 'score': 66},
-            {'name': 'Altyn', 'score': 61},
-          ]));
     }
-  }
-
-  bool _validateAnswer(int selectedIndex) {
-    return selectedIndex == correctAnswerIndex[currentQuestionIndex.value];
   }
 }

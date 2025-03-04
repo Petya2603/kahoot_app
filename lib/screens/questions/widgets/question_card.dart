@@ -1,11 +1,10 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
-
 import '../../../config/constants/constants.dart';
 import '../controller/quize_controller.dart';
 
 class QuestionCard extends StatelessWidget {
-  QuestionCard({super.key});
+  QuestionCard({super.key, required question});
   final QuizeScreenController controller = Get.put(QuizeScreenController());
   @override
   Widget build(BuildContext context) {
@@ -33,16 +32,16 @@ class QuestionCard extends StatelessWidget {
               ),
             ),
           ),
-          Obx(
-            () => Expanded(
-              flex: 2,
-              child: Text(
-                controller.questions[controller.currentQuestionIndex.value],
-                style: const TextStyle(
-                    fontFamily: Fonts.gilroySemiBold,
-                    fontSize: 22,
-                    color: AppColors.background),
-              ),
+          Expanded(
+            flex: 2,
+            child: Text(
+              // widget.question.first.questionText,
+              '',
+              textAlign: TextAlign.center,
+              style: const TextStyle(
+                  fontFamily: Fonts.gilroySemiBold,
+                  fontSize: 22,
+                  color: AppColors.background),
             ),
           ),
         ],

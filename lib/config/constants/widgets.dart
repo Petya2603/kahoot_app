@@ -41,4 +41,3 @@ Widget nextButton({VoidCallback? onTap}) {
     ),
   );
 }
-

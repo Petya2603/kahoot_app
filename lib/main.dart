@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:kahoot_app/config/constants/constants.dart';
-import 'package:kahoot_app/screens/home/home_screen.dart';
+import 'package:kahoot_app/screens/home/pincode_screen.dart';
 
 void main() {
   runApp(const MyApp());
@@ -22,7 +22,7 @@ class MyApp extends StatelessWidget {
         ),
       ),
       debugShowCheckedModeBanner: false,
-      home: const HomeScreen(),
+      home:  HomeScreen(),
     );
   }
 }

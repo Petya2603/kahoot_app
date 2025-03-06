@@ -1,11 +1,22 @@
 import 'package:flutter/material.dart';
 import '../../../config/constants/constants.dart';
-import '../../questions/widgets/bottom_nav_bar.dart';
+import 'package:flutter_svg/flutter_svg.dart';
 
-class ResultCorrectScreen extends StatelessWidget {
-  const ResultCorrectScreen({super.key, required this.onNext});
-  final VoidCallback onNext;
+class ResultCorrectScreen extends StatefulWidget {
+  const ResultCorrectScreen(
+      {super.key,
+      required this.nickname,
+      required this.score,
+      required this.message});
+  final int score;
+  final String nickname;
+  final String message;
 
+  @override
+  State<ResultCorrectScreen> createState() => _ResultCorrectScreenState();
+}
+
+class _ResultCorrectScreenState extends State<ResultCorrectScreen> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -25,19 +36,38 @@ class ResultCorrectScreen extends StatelessWidget {
                 ),
               ),
               const SizedBox(height: 20),
-              const Image(image: AssetImage(Assets.check)),
+              Center(
+                child: SvgPicture.asset(
+                  'assets/images/correct.svg',
+                  width: 125,
+                  height: 125,
+                  colorFilter:
+                      const ColorFilter.mode(Colors.green, BlendMode.srcIn),
+                ),
+              ),
               const SizedBox(height: 20),
-              const Text(
-                "You Earned 10 pts",
-                style: TextStyle(
+              Text(
+                widget.message,
+                style: const TextStyle(
                   color: AppColors.white,
                   fontSize: 18,
                   fontFamily: Fonts.gilroyMedium,
                 ),
               ),
+              const SizedBox(
+                height: 10,
+              ),
+              Text(
+                '+${widget.score.toString()}',
+                style: const TextStyle(
+                  color: AppColors.white,
+                  fontSize: 20,
+                  fontFamily: Fonts.gilroyMedium,
+                ),
+              ),
               const SizedBox(height: 35),
               ElevatedButton(
-                onPressed: onNext,
+                onPressed: () {},
                 style: ElevatedButton.styleFrom(
                   backgroundColor: AppColors.orange,
                   padding:
@@ -60,10 +90,13 @@ class ResultCorrectScreen extends StatelessWidget {
           ),
         ),
       ),
-      bottomNavigationBar: BottomAppBar(
-        color: AppColors.white,
-        child: BottomNavBarNameQuize(),
-      ),
+      // bottomNavigationBar: BottomAppBar(
+      //   color: AppColors.white,
+      //   child: BottomNavBarName(
+      //     score: widget.score,
+      //     nickname: widget.nickname,
+      //   ),
+      // ),
     );
   }
 }

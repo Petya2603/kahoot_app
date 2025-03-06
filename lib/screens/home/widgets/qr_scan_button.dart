@@ -35,9 +35,6 @@ class QRScanButton extends StatelessWidget {
     final scanData = await Get.to(() => const QRScanScreen());
     if (scanData != null) {
       if (_validateQRCode(scanData)) {
-        // Get.to(StartScreen(
-        //   pinCode: '',
-        // ));
       } else {
         Get.snackbar('Error', 'Invalid QR code');
       }

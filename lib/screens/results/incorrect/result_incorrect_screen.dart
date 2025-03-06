@@ -1,10 +1,16 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_svg/svg.dart';
 import '../../../config/constants/constants.dart';
-import '../../questions/widgets/bottom_nav_bar.dart';
 
 class ResultIncorrectScreen extends StatelessWidget {
-  const ResultIncorrectScreen({super.key, required this.onNext});
-  final VoidCallback onNext;
+  const ResultIncorrectScreen(
+      {super.key,
+      required this.nickname,
+      required this.score,
+      required this.message});
+  final int score;
+  final String nickname;
+  final String message;
 
   @override
   Widget build(BuildContext context) {
@@ -25,19 +31,38 @@ class ResultIncorrectScreen extends StatelessWidget {
                 ),
               ),
               const SizedBox(height: 20),
-              const Image(image: AssetImage(Assets.check)),
+              Center(
+                child: SvgPicture.asset(
+                  'assets/images/wrong.svg',
+                  width: 125,
+                  height: 125,
+                  colorFilter:
+                      const ColorFilter.mode(Colors.red, BlendMode.srcIn),
+                ),
+              ),
               const SizedBox(height: 20),
-              const Text(
-                "Better luck next time!",
-                style: TextStyle(
+              Text(
+                message,
+                style: const TextStyle(
                   color: AppColors.white,
                   fontSize: 18,
                   fontFamily: Fonts.gilroyMedium,
                 ),
               ),
+              const SizedBox(
+                height: 10,
+              ),
+              Text(
+                '+${score.toString()}',
+                style: const TextStyle(
+                  color: AppColors.white,
+                  fontSize: 20,
+                  fontFamily: Fonts.gilroyMedium,
+                ),
+              ),
               const SizedBox(height: 35),
               ElevatedButton(
-                onPressed: onNext,
+                onPressed: () {},
                 style: ElevatedButton.styleFrom(
                   backgroundColor: AppColors.orange,
                   padding:
@@ -59,10 +84,6 @@ class ResultIncorrectScreen extends StatelessWidget {
             ],
           ),
         ),
-      ),
-      bottomNavigationBar: BottomAppBar(
-        color: AppColors.white,
-        child: BottomNavBarNameQuize(),
       ),
     );
   }

@@ -1,22 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:get/get.dart';
 import 'package:kahoot_app/config/constants/constants.dart';
-import '../../screens/questions/controller/quize_controller.dart';
-
-final QuizeScreenController controller = Get.put(QuizeScreenController());
-Widget buildImage(String asset, double width, double height,
-    {VoidCallback? onTap}) {
-  return GestureDetector(
-    onTap: onTap,
-    child: ClipRRect(
-      child: SizedBox(
-        width: width,
-        height: height,
-        child: Image.asset(asset, fit: BoxFit.contain),
-      ),
-    ),
-  );
-}
 
 Widget nextButton({VoidCallback? onTap}) {
   return GestureDetector(

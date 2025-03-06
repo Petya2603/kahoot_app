@@ -1,16 +1,19 @@
 import 'package:flutter/material.dart';
+import 'package:get/get.dart';
 import 'package:kahoot_app/config/constants/constants.dart';
 import 'package:kahoot_app/screens/home/widgets/name_textfield.dart';
 import 'package:kahoot_app/screens/home/widgets/pin_textfield.dart';
 import '../../config/constants/widgets.dart';
+import '../../config/dialog/showsnacbar.dart';
 import '../../services/participant_api_service.dart';
 import '../qr_scan/qr_scan_screen.dart';
-import '../waiting_screem/waiting_screen.dart';
+import '../waiting_screen/waiting_screen.dart';
 
 class HomeScreen extends StatefulWidget {
   const HomeScreen({super.key});
 
   @override
+  // ignore: library_private_types_in_public_api
   _HomeScreenState createState() => _HomeScreenState();
 }
 
@@ -28,28 +31,19 @@ class _HomeScreenState extends State<HomeScreen> {
         pinCode: pinCode,
       );
       if (response['status'] == 'success') {
-        Navigator.push(
-          context,
-          MaterialPageRoute(
-            builder: (context) => WaitingScreen(
+        Get.to(() => WaitingScreen(
+              id: response['data']['id'],
               quizID: response['data']['quizID'],
               avatar: response['data']['avatar'],
               nickname: response['data']['nickname'],
               score: response['data']['score'],
-            ),
-          ),
-        );
+            ));
       } else {
-        // ignore: use_build_context_synchronously
-        ScaffoldMessenger.of(context).showSnackBar(
-          SnackBar(content: Text(response['message'])),
-        );
+        showCustomSnackBar(context, response['message']);
       }
     } catch (e) {
       // ignore: use_build_context_synchronously
-      ScaffoldMessenger.of(context).showSnackBar(
-        SnackBar(content: Text('Eror: $e')),
-      );
+      showCustomSnackBar(context, 'Error: $e');
     }
   }
 
@@ -119,11 +113,11 @@ class _HomeScreenState extends State<HomeScreen> {
                               color: AppColors.background,
                               fontFamily: Fonts.gilroyBold),
                         ),
-                        const SizedBox(height: 15),
+                        const SizedBox(height: 10),
                         PinTextfield(controller: pinController),
                         const SizedBox(height: 10),
                         NameTextField(controller: nameController),
-                        const SizedBox(height: 20),
+                        const SizedBox(height: 15),
                         nextButton(onTap: joinQuiz),
                       ],
                     ),

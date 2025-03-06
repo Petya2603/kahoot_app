@@ -1,69 +1,38 @@
 import 'dart:async';
-
 import 'package:flutter/material.dart';
+import 'package:get/get.dart';
 import 'package:kahoot_app/screens/home/widgets/bottomnavbar.dart';
+import 'package:kahoot_app/screens/waiting_screen/controller/waiting_controller.dart';
 import '../../config/constants/constants.dart';
-import '../../models/question_model.dart';
-import '../../services/question_api_service.dart';
-import '../questions/questions_screen.dart';
 
-class WaitingScreen extends StatefulWidget {
+class WaitingScreen extends StatelessWidget {
   const WaitingScreen({
     super.key,
     required this.quizID,
     required this.avatar,
     required this.nickname,
     required this.score,
+    required this.id,
   });
+  final int id;
   final int quizID;
   final String avatar;
   final String nickname;
   final int score;
 
   @override
-  State<WaitingScreen> createState() => _WaitingScreenState();
-}
-
-class _WaitingScreenState extends State<WaitingScreen> {
-  final ApiServiceQuestion _apiService = ApiServiceQuestion();
-  List<Question> _questions = [];
-  bool _isLoading = true;
-  Future<void> _fetchQuestions() async {
-    try {
-      final questions = await _apiService.getQuestionsByQuizId(widget.quizID);
-      if (questions.isNotEmpty) {
-        setState(() {
-          _questions = questions;
-          _isLoading = false;
-        });
-        Navigator.pushReplacement(
-          // ignore: use_build_context_synchronously
-          context,
-          MaterialPageRoute(
-            builder: (context) => QuestionScreen(questions: _questions),
-          ),
-        );
-      }
-    } catch (e) {
-      setState(() {
-        _isLoading = false;
-      });
-    }
-  }
-
-  @override
-  void initState() {
-    super.initState();
-    Future.delayed(Duration.zero, () {
-      _fetchQuestions();
-    });
-    Timer.periodic(const Duration(seconds: 3), (timer) {
-      _fetchQuestions();
-    });
-  }
-
-  @override
   Widget build(BuildContext context) {
+    final WaitingScreenController controller =
+        Get.put(WaitingScreenController());
+
+    Timer.periodic(const Duration(seconds: 5), (timer) {
+      if (!controller.isLoading.value) {
+        timer.cancel();
+      } else {
+        controller.fetchQuestions(quizID, avatar, nickname, score, id);
+      }
+    });
+
     return Scaffold(
       appBar: AppBar(
         automaticallyImplyLeading: false,
@@ -72,7 +41,7 @@ class _WaitingScreenState extends State<WaitingScreen> {
           mainAxisAlignment: MainAxisAlignment.spaceBetween,
           children: [
             Text(
-              widget.nickname,
+              nickname,
               style: const TextStyle(
                 color: AppColors.white,
                 fontSize: 20,
@@ -80,7 +49,7 @@ class _WaitingScreenState extends State<WaitingScreen> {
               ),
             ),
             CircleAvatar(
-              backgroundImage: NetworkImage(widget.avatar),
+              backgroundImage: NetworkImage(avatar),
             ),
           ],
         ),
@@ -107,15 +76,17 @@ class _WaitingScreenState extends State<WaitingScreen> {
                       height: 15,
                     ),
                     Center(
-                      child: _isLoading
-                          ? const CircularProgressIndicator()
+                      child: Obx(() => controller.isLoading.value
+                          ? const CircularProgressIndicator(
+                              color: Colors.white,
+                            )
                           : const Text(
                               'Questions are loading...',
                               style: TextStyle(
                                   fontSize: 20,
                                   color: AppColors.white,
                                   fontFamily: Fonts.gilroyBold),
-                            ),
+                            )),
                     ),
                   ],
                 ),
@@ -126,7 +97,10 @@ class _WaitingScreenState extends State<WaitingScreen> {
       ),
       bottomNavigationBar: BottomAppBar(
         color: AppColors.white,
-        child: BottomNavBarName(score: widget.score),
+        child: BottomNavBarName(
+          score: score,
+          nickname: nickname,
+        ),
       ),
     );
   }

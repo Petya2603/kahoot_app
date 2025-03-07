@@ -50,6 +50,7 @@ class WaitingScreen extends StatelessWidget {
             ),
             CircleAvatar(
               backgroundImage: NetworkImage(avatar),
+              radius: 25,
             ),
           ],
         ),
@@ -96,7 +97,7 @@ class WaitingScreen extends StatelessWidget {
         ),
       ),
       bottomNavigationBar: BottomAppBar(
-        color: AppColors.white,
+        color: AppColors.background,
         child: BottomNavBarName(
           score: score,
           nickname: nickname,

@@ -82,13 +82,13 @@ class QuestionController extends GetxController {
         final message = response['message'];
 
         if (isCorrect) {
-          Get.offAll(() => ResultCorrectScreen(
+          Get.to(() => ResultCorrectScreen(
                 score: scoreques,
                 nickname: nickname,
                 message: message,
               ));
         } else {
-          Get.offAll(() => ResultIncorrectScreen(
+          Get.to(() => ResultIncorrectScreen(
                 score: scoreques,
                 nickname: nickname,
                 message: message,

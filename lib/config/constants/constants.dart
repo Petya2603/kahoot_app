@@ -51,4 +51,19 @@ class AppColors {
   static const Color blue = Color.fromRGBO(170, 141, 255, 1);
   static const Color red = Color.fromRGBO(173, 38, 41, 1);
   static const Color black = Color.fromRGBO(36, 35, 35, 1);
+  static const Color yellow = Color.fromRGBO(237, 248, 21, 1);
 }
+
+List<Color> colors = [
+  const Color.fromARGB(255, 225, 13, 48),
+  const Color.fromARGB(255, 9, 89, 203),
+  const Color.fromARGB(255, 213, 150, 0),
+  const Color.fromARGB(255, 20, 107, 4),
+];
+
+List<Widget> shapes = [
+  const Icon(Icons.change_history, color: Colors.white, size: 24),
+  const Icon(Icons.diamond, color: Colors.white, size: 24),
+  const Icon(Icons.circle, color: Colors.white, size: 24),
+  const Icon(Icons.square, color: Colors.white, size: 24),
+];

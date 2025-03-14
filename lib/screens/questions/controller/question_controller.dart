@@ -3,52 +3,37 @@ import 'dart:convert';
 import 'package:get/get.dart';
 import 'package:http/http.dart' as http;
 import 'package:kahoot_app/screens/results/correct/results_correct_screen.dart';
-import '../../../models/question_next_model.dart';
+import '../../../models/quiz_response.dart';
 import '../../waiting_screen/controller/waiting_controller.dart';
 
 class QuestionController extends GetxController {
-  final List<Question> questions;
-  final int quizID;
-  final int scoreq;
-  final String nickname;
-  final String avatar;
-  final int id;
-  final int questionCount;
+  final QuizResponse quizResponse;
 
   QuestionController({
-    required this.questions,
-    required this.quizID,
-    required this.scoreq,
-    required this.nickname,
-    required this.avatar,
-    required this.id,
-    required this.questionCount,
+    required this.quizResponse,
   });
 
-  final String baseUrl = "https://quiz.kamilbilim.com/api";
-  final _currentQuestionIndex = 0.obs;
-  final _isAnswered = false.obs;
-  final _timeSpent = 0.obs;
+  String baseUrl = "https://quiz.kamilbilim.com/api";
+  RxBool isAnswered = false.obs;
+  RxInt timeSpent = 0.obs;
   late Timer _timer;
-  final isLoading = true.obs;
-  Question get currentQuestion => questions[_currentQuestionIndex.value];
-  bool get isAnswered => _isAnswered.value;
-  int get timeSpent => _timeSpent.value;
+  RxBool isLoading = true.obs;
+
   final WaitingScreenController waitingScreenController =
       Get.put(WaitingScreenController());
+
   @override
   void onInit() async {
     super.onInit();
-
-    _timeSpent.value = currentQuestion.timeLimiter;
+    timeSpent.value = waitingScreenController.questionsData[0].timeLimiter;
     _startTimer();
   }
 
   void _startTimer() {
-    _timeSpent.value = currentQuestion.timeLimiter;
+    timeSpent.value = waitingScreenController.questionsData[0].timeLimiter;
     _timer = Timer.periodic(const Duration(seconds: 1), (timer) {
-      if (_timeSpent.value > 0) {
-        _timeSpent.value--;
+      if (timeSpent.value > 0) {
+        timeSpent.value--;
       } else {
         _timer.cancel();
         _onTimeOut();
@@ -57,13 +42,8 @@ class QuestionController extends GetxController {
   }
 
   void _onTimeOut() {
-    if (!_isAnswered.value) {
-      _isAnswered.value = true;
-      // Get.offAll(() => ResultIncorrectScreen(
-      //       nickname: nickname,
-      //       score: scoreq,
-      //       message: 'Time is up!',
-      //     ));
+    if (!isAnswered.value) {
+      isAnswered.value = true;
     }
   }
 
@@ -104,46 +84,33 @@ class QuestionController extends GetxController {
   }
 
   Future<void> onAnswerSelected(int selectedIndex) async {
-    if (!_isAnswered.value) {
-      _isAnswered.value = true;
+    if (!isAnswered.value) {
+      isAnswered.value = true;
       _timer.cancel();
       String userAnswer = "q${selectedIndex + 1}";
 
       try {
         final response = await postAnswer(
-          participantId: id,
-          questionId: currentQuestion.questionID,
+          participantId: quizResponse.id,
+          questionId: waitingScreenController.questionsData[0].questionID,
           userAnswer: userAnswer,
-          timeSpent: _timeSpent.value,
+          timeSpent: timeSpent.value,
         );
-        print('Participant ID $id , Question ID ${currentQuestion.questionID}');
+
         final isCorrect = response['isCorrect'];
         final scoreques = response['score'];
         final message = response['message'];
-        currentQuestion.isAnswered = true;
-        print(
-            "Question ID ${currentQuestion.questionID} is now answered: ${currentQuestion.isAnswered}");
-        waitingScreenController.questionsData.firstWhere(
-                (q) => q.questionID == currentQuestion.questionID).isAnswered =
-            true;
+
         if (isCorrect) {
-          currentQuestion.isAnswered = true;
           Get.offAll(() => ResultCorrectScreen(
                 score: scoreques,
-                nickname: nickname,
                 message: message,
-                questionsr: questions,
-                quizIDr: quizID,
-                scoreqr: scoreq,
-                nicknamer: nickname,
-                avatarr: avatar,
-                idr: id,
-                questionCountr: questionCount,
+                quizResponse: quizResponse,
               ));
         } else {
           // Get.offAll(() => ResultIncorrectScreen(
           //       score: scoreques,
-          //       nickname: nickname,
+          //       nickname: quizResponse.nickname,
           //       message: message,
           //     ));
         }

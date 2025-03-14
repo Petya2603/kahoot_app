@@ -1,56 +1,40 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
-import 'package:kahoot_app/screens/questions/widgets/appbar.dart';
-import 'package:kahoot_app/screens/waiting_screen/controller/waiting_controller.dart';
-import '../../config/constants/constants.dart';
-import '../../models/question_next_model.dart';
-import '../home/widgets/bottomnavbar.dart';
+import 'package:kahoot_app/screens/home/widgets/bottomnavbar.dart';
 import 'package:kahoot_app/screens/questions/controller/question_controller.dart';
+import 'package:kahoot_app/screens/questions/widgets/appbar.dart';
+import '../../config/constants/constants.dart';
+import '../../models/quiz_response.dart';
+
+import '../waiting_screen/controller/waiting_controller.dart';
 import 'widgets/optionbutton.dart';
 
 class QuestionScreen extends StatelessWidget {
-  const QuestionScreen({
+  final QuizResponse quizResponse;
+
+  QuestionScreen({
     super.key,
-    required this.questions,
-    required this.score,
-    required this.nickname,
-    required this.quizID,
-    required this.id,
-    required this.avatar,
-    required this.questionCount,
+    required this.quizResponse,
   });
 
-  final int id;
-  final List<Question> questions;
-  final int quizID;
-  final int score;
-  final String nickname;
-  final String avatar;
-  final int questionCount;
+  final WaitingScreenController waitingScreenController =
+      Get.put(WaitingScreenController());
 
   @override
   Widget build(BuildContext context) {
-    final QuestionController controller = Get.put(QuestionController(
-      questions: questions,
-      questionCount: questionCount,
-      scoreq: score,
-      nickname: nickname,
-      quizID: quizID,
-      id: id,
-      avatar: avatar,
-    ));
-
     final double screenHeight = MediaQuery.of(context).size.height;
     final double screenWidth = MediaQuery.of(context).size.width;
-
+    final QuestionController questionController = Get.put(QuestionController(
+      quizResponse: quizResponse,
+    ));
     return Scaffold(
       appBar: AppBar(
         automaticallyImplyLeading: false,
         backgroundColor: AppColors.background,
         title: AppBarTitle(
-          id: controller.currentQuestion.questionID,
-          timeLimiter: controller.currentQuestion.timeLimiter,
-          avatar: avatar,
+          id: waitingScreenController.questionsData[0].questionID,
+          timeLimiter: waitingScreenController.questionsData[0].timeLimiter,
+          avatar: quizResponse.avatar,
         ),
       ),
       backgroundColor: AppColors.background,
@@ -62,10 +46,10 @@ class QuestionScreen extends StatelessWidget {
         child: Column(
           children: [
             SizedBox(
-              height: screenHeight * 0.25,
+              height: screenHeight * 0.15,
               child: Center(
                 child: Obx(() => Text(
-                      controller.currentQuestion.questionText,
+                      waitingScreenController.questionsData[0].questionText,
                       style: TextStyle(
                         fontSize: screenWidth * 0.06,
                         fontFamily: Fonts.gilroyBold,
@@ -83,15 +67,21 @@ class QuestionScreen extends StatelessWidget {
                       crossAxisSpacing: screenWidth * 0.03,
                       childAspectRatio: 1,
                     ),
-                    itemCount: controller.currentQuestion.options.length,
+                    itemCount:
+                        waitingScreenController.questionsData[0].options.length,
                     itemBuilder: (context, index) {
-                      String option = controller.currentQuestion.options[index];
+                      final option = waitingScreenController
+                          .questionsData[0].options[index];
+                      final isCorrect = option ==
+                          waitingScreenController
+                              .questionsData[0].correctAnswer;
+
                       return buildOptionButton(
                         option,
-                        option == controller.currentQuestion.correctAnswer,
+                        isCorrect,
                         colors[index % 4],
                         index,
-                        controller,
+                        questionController,
                       );
                     },
                   )),
@@ -102,7 +92,7 @@ class QuestionScreen extends StatelessWidget {
       bottomNavigationBar: BottomAppBar(
         color: AppColors.background,
         child: BottomNavBarName(
-          nickname: nickname,
+          nickname: quizResponse.nickname,
         ),
       ),
     );

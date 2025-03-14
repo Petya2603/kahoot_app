@@ -11,7 +11,7 @@ Widget buildOptionButton(String optionText, bool isCorrect, Color color,
 
   return Obx(() => GestureDetector(
         onTap: () {
-          if (!controller.isAnswered) {
+          if (!controller.isAnswered.value) {
             isTapped.value = true;
             rotation.value += 1;
             translationX.value = 10;

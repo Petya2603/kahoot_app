@@ -1,71 +1,32 @@
 import 'package:get/get.dart';
 import '../../../models/question_next_model.dart';
+import '../../../models/quiz_response.dart';
 import '../../../services/question_api_service.dart';
 import '../../questions/questions_screen.dart';
 
 class WaitingScreenController extends GetxController {
   final ApiServiceQuestion apiService = ApiServiceQuestion();
+  RxBool isLoading = true.obs;
 
-  var isLoading = true.obs;
+  RxList<Question> questionsData = <Question>[].obs;
 
-  List<Question> questionsData = [];
-
-  Future<void> fetchQuestions(
-    int id,
-    int quizID,
-    String avatar,
-    String nickname,
-    int score,
-    int questionCount,
-  ) async {
+  Future<void> fetchQuestions(QuizResponse quizResponse) async {
     try {
-      await getData(quizID);
-      filterQuestions();
-      sendQuestionsToScreen(id, avatar, nickname, score, quizID, questionCount);
+      List<Question> newQuestions =
+          await apiService.fetchQuestions(quizResponse.quizID);
+      questionsData.addAll(newQuestions);
+      sendQuestionsToScreen(quizResponse);
+      print('All questions: ${questionsData.length}');
     } catch (e) {
-      isLoading.value = false;
-      print('Eroorrrr : $e');
+      print(' $e');
     }
   }
 
-  Future<void> getData(int quizID) async {
-    final questions = await apiService.getQuestionsByQuizId(quizID);
-
-    if (questions.isNotEmpty) {
-      questionsData = questions.map((q) {
-        q.isAnswered = false;
-        print("Question ID ${q.questionID} ");
-        return q;
-      }).toList();
-    } else {
-      isLoading.value = false;
-      print('No questions available.');
-      return;
-    }
-  }
-
-  void filterQuestions() {
-    questionsData = questionsData.where((q) => q.isAnswered == false).toList();
-  }
-
-  void sendQuestionsToScreen(
-    int id,
-    String avatar,
-    String nickname,
-    int score,
-    int quizID,
-    int questionCount,
-  ) {
+  void sendQuestionsToScreen(QuizResponse quizResponse) {
     isLoading.value = false;
-    Get.off(QuestionScreen(
-      id: id,
-      avatar: Uri.parse(avatar).toString(),
-      questions: questionsData,
-      score: score,
-      nickname: nickname,
-      quizID: quizID,
-      questionCount: questionCount,
+    Get.to(QuestionScreen(
+      quizResponse: quizResponse,
     ));
-    print("QuestionScreendaky ID $id");
+    print("QuestionScreendaky ID ${quizResponse.id}");
   }
 }

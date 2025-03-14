@@ -8,6 +8,7 @@ import '../../config/dialog/showsnacbar.dart';
 import '../../services/participant_api_service.dart';
 import '../qr_scan/qr_scan_screen.dart';
 import '../waiting_screen/waiting_screen.dart';
+import '../../models/quiz_response.dart';
 
 class HomeScreen extends StatefulWidget {
   const HomeScreen({super.key});
@@ -31,16 +32,11 @@ class _HomeScreenState extends State<HomeScreen> {
         pinCode: pinCode,
       );
       if (response['status'] == 'success') {
+        final quizResponse = QuizResponse.fromJson(response['data']);
         Get.to(() => WaitingScreen(
-              id: response['data']['id'],
-              quizID: response['data']['quizID'],
-              avatar: response['data']['avatar'],
-              nickname: response['data']['nickname'],
-              score: response['data']['score'],
-              questionCount: response['data']['questionCount'],
+              quizResponse: quizResponse,
             ));
       } else {
-        // ignore: use_build_context_synchronously
         showCustomSnackBar(context, response['message']);
       }
     } catch (e) {

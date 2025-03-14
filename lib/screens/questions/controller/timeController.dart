@@ -1,3 +1,6 @@
+
+// ignore_for_file: file_names
+
 import 'dart:async';
 
 import 'package:get/get.dart';

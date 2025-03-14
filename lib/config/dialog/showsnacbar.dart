@@ -24,9 +24,7 @@ void showCustomSnackBar(BuildContext context, String message) {
       ),
     ),
   );
-
   Overlay.of(context).insert(overlayEntry);
-
   Future.delayed(const Duration(seconds: 2), () {
     overlayEntry.remove();
   });

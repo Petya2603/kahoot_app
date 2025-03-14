@@ -4,6 +4,7 @@ class Question {
   final int questionID;
   final String questionText;
   final int timeLimiter;
+  bool? isAnswered;
 
   Question({
     required this.correctAnswer,
@@ -11,6 +12,7 @@ class Question {
     required this.questionID,
     required this.questionText,
     required this.timeLimiter,
+    this.isAnswered,
   });
 
   factory Question.fromJson(Map<String, dynamic> json) {
@@ -20,6 +22,7 @@ class Question {
       questionID: json['questionID'],
       questionText: json['questionText'],
       timeLimiter: json['timeLimiter'],
+      isAnswered: json['isAnswered'], 
     );
   }
 }

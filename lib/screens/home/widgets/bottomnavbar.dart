@@ -3,12 +3,10 @@ import 'package:flutter/material.dart';
 import '../../../config/constants/constants.dart';
 
 class BottomNavBarName extends StatelessWidget {
-  final int score;
   final String nickname;
 
   const BottomNavBarName({
     super.key,
-    required this.score,
     required this.nickname,
   });
 
@@ -51,15 +49,11 @@ class BottomNavBarName extends StatelessWidget {
           ),
           Row(
             children: [
-              const Icon(
-                Icons.star,
-                color: AppColors.yellow,
-                size: 30,
-              ),
+              Image.asset('assets/images/star.png'),
               const SizedBox(width: 10),
-              Text(
-                score.toString(),
-                style: const TextStyle(
+              const Text(
+                'dfgdfg',
+                style: TextStyle(
                   color: AppColors.white,
                   fontSize: 20.0,
                   fontFamily: Fonts.gilroyBold,

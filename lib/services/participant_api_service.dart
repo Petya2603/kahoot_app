@@ -26,16 +26,13 @@ class ParticipantService {
       var responseBody = await response.stream.bytesToString();
 
       if (response.statusCode == 200 || response.statusCode == 201) {
-        print('Success: $responseBody');
         return jsonDecode(responseBody);
       } else {
         var errorResponse = jsonDecode(responseBody);
         String errorMessage = errorResponse['errorMessage'] ?? 'Unknown error';
-        print('Error: $errorMessage');
         throw Exception(errorMessage);
       }
     } catch (e) {
-      print('Exception: $e');
       throw Exception(e.toString());
     }
   }

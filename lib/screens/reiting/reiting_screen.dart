@@ -1,37 +1,32 @@
 import 'package:flutter/material.dart';
-import 'package:kahoot_app/screens/reiting/widgets/reiting_card_screen.dart';
 
 import '../../config/constants/constants.dart';
 
 class ReitingScreen extends StatelessWidget {
-  final List<Map<String, dynamic>> scores;
-
-  const ReitingScreen({super.key, required this.scores});
+  const ReitingScreen({super.key, required this.score, required this.nickname});
+  final int score;
+  final String nickname;
 
   @override
   Widget build(BuildContext context) {
-    scores.sort((a, b) => b['score'].compareTo(a['score']));
     return Scaffold(
       appBar: AppBar(
-        backgroundColor: AppColors.background,
+        backgroundColor: const Color.fromARGB(255, 255, 255, 255),
         automaticallyImplyLeading: false,
+        title: const Text('Reintg'),
       ),
       backgroundColor: AppColors.background,
       body: ListView.builder(
-        itemCount: scores.length,
-        itemBuilder: (context, index) {
-          final score = scores[index];
-          return Container(
-            margin: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
-            decoration: BoxDecoration(
-              color: Colors.grey[100]!,
-              borderRadius: BorderRadius.circular(12),
-            ),
-            child: ReitingCardScreen(
-                rank: index + 1, name: score['name'], score: score['score']),
-          );
-        },
-      ),
+          itemCount: 10,
+          itemBuilder: (context, index) {
+            return Container(
+              margin: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
+              decoration: BoxDecoration(
+                color: Colors.grey[100]!,
+                borderRadius: BorderRadius.circular(12),
+              ),
+            );
+          }),
     );
   }
 }

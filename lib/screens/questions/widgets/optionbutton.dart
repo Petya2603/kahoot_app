@@ -73,7 +73,7 @@ Widget buildOptionButton(String optionText, bool isCorrect, Color color,
                   style: const TextStyle(
                     fontSize: 20,
                     color: Colors.white,
-                    fontWeight: FontWeight.bold,
+                    fontFamily: Fonts.gilroyBold,
                   ),
                   textAlign: TextAlign.center,
                 ),

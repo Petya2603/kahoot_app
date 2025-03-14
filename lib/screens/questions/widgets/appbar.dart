@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_svg/svg.dart';
 import 'package:get/get.dart';
 import '../../../config/constants/constants.dart';
 import '../controller/timeController.dart';
@@ -21,18 +22,7 @@ class AppBarTitle extends StatelessWidget {
         Get.put(TimerController(timeLimiter));
 
     return Container(
-      decoration: const BoxDecoration(
-        gradient: LinearGradient(
-          colors: [AppColors.background, AppColors.background],
-          begin: Alignment.topLeft,
-          end: Alignment.bottomRight,
-        ),
-        borderRadius: BorderRadius.only(
-          bottomLeft: Radius.circular(30),
-          bottomRight: Radius.circular(30),
-        ),
-      ),
-      padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 10),
+      padding: const EdgeInsets.only(left: 10, right: 10),
       child: Row(
         mainAxisAlignment: MainAxisAlignment.spaceBetween,
         children: [
@@ -85,7 +75,7 @@ class AppBarTitle extends StatelessWidget {
             crossAxisAlignment: CrossAxisAlignment.end,
             children: [
               Text(
-                "Question $id",
+                "20 / $id",
                 style: const TextStyle(
                   color: AppColors.white,
                   fontSize: 18,
@@ -96,10 +86,12 @@ class AppBarTitle extends StatelessWidget {
               const SizedBox(height: 5),
               Row(
                 children: [
-                  Icon(
-                    Icons.timer,
-                    color: AppColors.white,
-                    size: 18,
+                  SvgPicture.asset(
+                    'assets/images/timer.svg',
+                    width: 20,
+                    height: 20,
+                    colorFilter: const ColorFilter.mode(
+                        AppColors.white, BlendMode.srcIn),
                   ),
                   const SizedBox(width: 5),
                   Text(

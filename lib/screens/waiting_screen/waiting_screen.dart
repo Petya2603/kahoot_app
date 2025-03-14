@@ -11,14 +11,16 @@ class WaitingScreen extends StatelessWidget {
     required this.quizID,
     required this.avatar,
     required this.nickname,
-    required this.score,
     required this.id,
+    required this.score,
+    required this.questionCount,
   });
   final int id;
   final int quizID;
   final String avatar;
   final String nickname;
   final int score;
+  final int questionCount;
 
   @override
   Widget build(BuildContext context) {
@@ -29,7 +31,8 @@ class WaitingScreen extends StatelessWidget {
       if (!controller.isLoading.value) {
         timer.cancel();
       } else {
-        controller.fetchQuestions(quizID, avatar, nickname, score, id);
+        controller.fetchQuestions(
+            id, quizID, avatar, nickname, score, questionCount);
       }
     });
 
@@ -99,7 +102,6 @@ class WaitingScreen extends StatelessWidget {
       bottomNavigationBar: BottomAppBar(
         color: AppColors.background,
         child: BottomNavBarName(
-          score: score,
           nickname: nickname,
         ),
       ),

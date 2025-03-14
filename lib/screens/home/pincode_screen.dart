@@ -37,12 +37,14 @@ class _HomeScreenState extends State<HomeScreen> {
               avatar: response['data']['avatar'],
               nickname: response['data']['nickname'],
               score: response['data']['score'],
+              questionCount: response['data']['questionCount'],
             ));
       } else {
+        // ignore: use_build_context_synchronously
         showCustomSnackBar(context, response['message']);
       }
     } catch (e) {
-      // ignore: use_build_context_synchronously
+      print(e);
       showCustomSnackBar(context, 'Error: $e');
     }
   }
@@ -118,7 +120,7 @@ class _HomeScreenState extends State<HomeScreen> {
                         const SizedBox(height: 10),
                         NameTextField(controller: nameController),
                         const SizedBox(height: 15),
-                        nextButton(onTap: joinQuiz),
+                        AnimatedNextButton(onTap: joinQuiz),
                       ],
                     ),
                   ),

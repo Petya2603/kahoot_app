@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:kahoot_app/screens/questions/widgets/appbar.dart';
+import 'package:kahoot_app/screens/waiting_screen/controller/waiting_controller.dart';
 import '../../config/constants/constants.dart';
 import '../../models/question_next_model.dart';
 import '../home/widgets/bottomnavbar.dart';
@@ -16,6 +17,7 @@ class QuestionScreen extends StatelessWidget {
     required this.quizID,
     required this.id,
     required this.avatar,
+    required this.questionCount,
   });
 
   final int id;
@@ -24,12 +26,14 @@ class QuestionScreen extends StatelessWidget {
   final int score;
   final String nickname;
   final String avatar;
+  final int questionCount;
 
   @override
   Widget build(BuildContext context) {
     final QuestionController controller = Get.put(QuestionController(
       questions: questions,
-      score: score,
+      questionCount: questionCount,
+      scoreq: score,
       nickname: nickname,
       quizID: quizID,
       id: id,
@@ -43,11 +47,11 @@ class QuestionScreen extends StatelessWidget {
       appBar: AppBar(
         automaticallyImplyLeading: false,
         backgroundColor: AppColors.background,
-        title: Obx(() => AppBarTitle(
-              id: controller.currentQuestion.questionID,
-              timeLimiter: controller.currentQuestion.timeLimiter,
-              avatar: avatar,
-            )),
+        title: AppBarTitle(
+          id: controller.currentQuestion.questionID,
+          timeLimiter: controller.currentQuestion.timeLimiter,
+          avatar: avatar,
+        ),
       ),
       backgroundColor: AppColors.background,
       body: Padding(
@@ -64,8 +68,8 @@ class QuestionScreen extends StatelessWidget {
                       controller.currentQuestion.questionText,
                       style: TextStyle(
                         fontSize: screenWidth * 0.06,
-                        fontWeight: FontWeight.bold,
-                        color: Colors.white,
+                        fontFamily: Fonts.gilroyBold,
+                        color: AppColors.white,
                       ),
                       textAlign: TextAlign.center,
                     )),
@@ -98,7 +102,6 @@ class QuestionScreen extends StatelessWidget {
       bottomNavigationBar: BottomAppBar(
         color: AppColors.background,
         child: BottomNavBarName(
-          score: score,
           nickname: nickname,
         ),
       ),

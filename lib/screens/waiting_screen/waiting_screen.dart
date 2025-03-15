@@ -5,6 +5,7 @@ import 'package:kahoot_app/screens/home/widgets/bottomnavbar.dart';
 import 'package:kahoot_app/screens/waiting_screen/controller/waiting_controller.dart';
 import '../../config/constants/constants.dart';
 import '../../models/quiz_response.dart';
+import '../questions/questions_screen.dart';
 import 'widget/appbar.dart';
 
 class WaitingScreen extends StatefulWidget {
@@ -27,7 +28,11 @@ class _WaitingScreenState extends State<WaitingScreen> {
       if (!controller.isLoading.value) {
         timer.cancel();
       } else {
-        controller.fetchQuestions(widget.quizResponse);
+        controller.fetchQuestions(widget.quizResponse).then((_) {
+          if (controller.questionsData.isNotEmpty) {
+            Get.to(() => QuestionScreen(quizResponse: widget.quizResponse));
+          }
+        });
       }
     });
   }

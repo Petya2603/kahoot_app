@@ -19,14 +19,12 @@ class QuestionScreen extends StatelessWidget {
 
   final WaitingScreenController waitingScreenController =
       Get.put(WaitingScreenController());
-
+  final QuestionController questionController = Get.find();
   @override
   Widget build(BuildContext context) {
     final double screenHeight = MediaQuery.of(context).size.height;
     final double screenWidth = MediaQuery.of(context).size.width;
-    final QuestionController questionController = Get.put(QuestionController(
-      quizResponse: quizResponse,
-    ));
+
     return Scaffold(
       appBar: AppBar(
         automaticallyImplyLeading: false,

@@ -11,15 +11,15 @@ class WaitingScreenController extends GetxController {
   RxList<Question> questionsData = <Question>[].obs;
 
   Future<void> fetchQuestions(QuizResponse quizResponse) async {
-    try {
-      List<Question> newQuestions =
-          await apiService.fetchQuestions(quizResponse.quizID);
-      questionsData.addAll(newQuestions);
-      sendQuestionsToScreen(quizResponse);
-      print('All questions: ${questionsData.length}');
-    } catch (e) {
-      print(' $e');
+    List<Question> newQuestions =
+        await apiService.fetchQuestions(quizResponse.quizID);
+
+    for (var question in newQuestions) {
+      question.isAnswered = false;
     }
+    questionsData.addAll(newQuestions);
+    sendQuestionsToScreen(quizResponse);
+    print('All questions: ${questionsData.length}');
   }
 
   void sendQuestionsToScreen(QuizResponse quizResponse) {

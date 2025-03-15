@@ -2,9 +2,10 @@ import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:get/get.dart';
 import '../../../models/quiz_response.dart';
+import '../../questions/questions_screen.dart';
 import '../../waiting_screen/controller/waiting_controller.dart';
 
-class ResultCorrectScreen extends StatelessWidget {
+class ResultCorrectScreen extends StatefulWidget {
   final int score;
   final String message;
   final QuizResponse quizResponse;
@@ -17,9 +18,14 @@ class ResultCorrectScreen extends StatelessWidget {
   });
 
   @override
-  Widget build(BuildContext context) {
-    final WaitingScreenController waitingController = Get.find();
+  State<ResultCorrectScreen> createState() => _ResultCorrectScreenState();
+}
 
+class _ResultCorrectScreenState extends State<ResultCorrectScreen> {
+  final WaitingScreenController waitingController = Get.find();
+
+  @override
+  Widget build(BuildContext context) {
     return Scaffold(
       backgroundColor: Colors.green[300],
       body: Center(
@@ -59,7 +65,7 @@ class ResultCorrectScreen extends StatelessWidget {
               ),
               const SizedBox(height: 20),
               Text(
-                message,
+                widget.message,
                 style: const TextStyle(
                   color: Colors.white,
                   fontSize: 24,
@@ -69,7 +75,7 @@ class ResultCorrectScreen extends StatelessWidget {
               ),
               const SizedBox(height: 10),
               Text(
-                '+${score.toString()}',
+                '+${widget.score.toString()}',
                 style: const TextStyle(
                   color: Colors.white,
                   fontSize: 28,
@@ -77,19 +83,14 @@ class ResultCorrectScreen extends StatelessWidget {
                   fontWeight: FontWeight.bold,
                 ),
               ),
-              // ElevatedButton(
-              //   onPressed: () {
-              //     waitingController.getData(quizResponse.quizID);
-              //     if (quizResponse.quizID == 2) {
-              //       print('question iddd    $quizResponse.quizID');
-              //       waitingController.sendQuestionsToScreen(quizResponse);
-              //     } else {
-              //       print('question iddd    $quizResponse.quizID');
-              //       print('tazeden');
-              //     }
-              //   },
-              //   child: const Text('Next'),
-              // ),
+              ElevatedButton(
+                onPressed: () async {
+                  await waitingController.fetchQuestions(widget.quizResponse);
+                  Get.to(
+                      () => QuestionScreen(quizResponse: widget.quizResponse));
+                },
+                child: const Text('Next'),
+              ),
             ],
           ),
         ),

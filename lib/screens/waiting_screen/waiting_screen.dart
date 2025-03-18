@@ -24,6 +24,10 @@ class _WaitingScreenState extends State<WaitingScreen> {
   @override
   void initState() {
     super.initState();
+    fetchNewQuestions();
+  }
+
+  void fetchNewQuestions() {
     Timer.periodic(const Duration(seconds: 5), (timer) {
       if (!controller.isLoading.value) {
         timer.cancel();
@@ -80,6 +84,7 @@ class _WaitingScreenState extends State<WaitingScreen> {
       bottomNavigationBar: BottomAppBar(
         color: AppColors.background,
         child: BottomNavBarName(
+          score: widget.quizResponse.score,
           nickname: widget.quizResponse.nickname,
         ),
       ),

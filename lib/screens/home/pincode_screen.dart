@@ -14,11 +14,10 @@ class HomeScreen extends StatefulWidget {
   const HomeScreen({super.key});
 
   @override
-  // ignore: library_private_types_in_public_api
-  _HomeScreenState createState() => _HomeScreenState();
+  HomeScreenState createState() => HomeScreenState();
 }
 
-class _HomeScreenState extends State<HomeScreen> {
+class HomeScreenState extends State<HomeScreen> {
   final GlobalKey<FormState> _formKey = GlobalKey<FormState>();
   final TextEditingController pinController = TextEditingController();
   final TextEditingController nameController = TextEditingController();
@@ -37,10 +36,11 @@ class _HomeScreenState extends State<HomeScreen> {
               quizResponse: quizResponse,
             ));
       } else {
+        // ignore: use_build_context_synchronously
         showCustomSnackBar(context, response['message']);
       }
     } catch (e) {
-      print(e);
+      // ignore: use_build_context_synchronously
       showCustomSnackBar(context, 'Error: $e');
     }
   }
@@ -105,7 +105,7 @@ class _HomeScreenState extends State<HomeScreen> {
                     child: Column(
                       children: [
                         const Text(
-                          "Enter the PIN you see on the big screen.",
+                          "Enter the PIN and Nickname.",
                           style: TextStyle(
                               fontSize: 16,
                               color: AppColors.background,

@@ -1,20 +1,22 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:get/get.dart';
+import '../../../config/constants/constants.dart';
 import '../../../models/quiz_response.dart';
-import '../../questions/questions_screen.dart';
+import '../../reiting/reiting_screen.dart';
 import '../../waiting_screen/controller/waiting_controller.dart';
 
 class ResultCorrectScreen extends StatefulWidget {
   final int score;
   final String message;
   final QuizResponse quizResponse;
-
+  final int questionID;
   const ResultCorrectScreen({
     super.key,
     required this.score,
     required this.message,
     required this.quizResponse,
+    required this.questionID,
   });
 
   @override
@@ -23,7 +25,6 @@ class ResultCorrectScreen extends StatefulWidget {
 
 class _ResultCorrectScreenState extends State<ResultCorrectScreen> {
   final WaitingScreenController waitingController = Get.find();
-
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -38,7 +39,7 @@ class _ResultCorrectScreenState extends State<ResultCorrectScreen> {
                 "Nice Work!",
                 style: TextStyle(
                   color: Colors.white,
-                  fontFamily: 'GilroyBold',
+                  fontFamily: Fonts.gilroyBold,
                   fontSize: 36,
                   fontWeight: FontWeight.bold,
                 ),
@@ -69,7 +70,7 @@ class _ResultCorrectScreenState extends State<ResultCorrectScreen> {
                 style: const TextStyle(
                   color: Colors.white,
                   fontSize: 24,
-                  fontFamily: 'GilroyMedium',
+                  fontFamily: Fonts.gilroyMedium,
                 ),
                 textAlign: TextAlign.center,
               ),
@@ -79,18 +80,63 @@ class _ResultCorrectScreenState extends State<ResultCorrectScreen> {
                 style: const TextStyle(
                   color: Colors.white,
                   fontSize: 28,
-                  fontFamily: 'GilroyMedium',
+                  fontFamily: Fonts.gilroyMedium,
                   fontWeight: FontWeight.bold,
                 ),
               ),
-              ElevatedButton(
-                onPressed: () async {
-                  await waitingController.fetchQuestions(widget.quizResponse);
-                  Get.to(
-                      () => QuestionScreen(quizResponse: widget.quizResponse));
+              const SizedBox(height: 20),
+              GestureDetector(
+                onTap: () async {
+                  if (widget.quizResponse.questionCount == widget.questionID) {
+                    Get.to(ReitingScreen(
+                      quizResponse: widget.quizResponse,
+                    ));
+                  } else {
+                    (await waitingController
+                        .fetchQuestions(widget.quizResponse));
+                  }
                 },
-                child: const Text('Next'),
-              ),
+                child: AnimatedContainer(
+                  duration: const Duration(milliseconds: 300),
+                  width: 180,
+                  height: 60,
+                  decoration: BoxDecoration(
+                    gradient: const LinearGradient(
+                      colors: [
+                        Color.fromARGB(255, 0, 206, 7),
+                        Color(0xFFB2FF59)
+                      ],
+                      begin: Alignment.topLeft,
+                      end: Alignment.bottomRight,
+                    ),
+                    borderRadius: BorderRadii.borderRadius15,
+                    boxShadow: [
+                      BoxShadow(
+                        color: Colors.black.withOpacity(0.3),
+                        blurRadius: 10,
+                        offset: const Offset(0, 5),
+                      ),
+                    ],
+                  ),
+                  child: const Row(
+                    mainAxisAlignment: MainAxisAlignment.center,
+                    children: [
+                      Text(
+                        "Next",
+                        style: TextStyle(
+                          color: Colors.white,
+                          fontSize: 22,
+                          fontWeight: FontWeight.bold,
+                          fontFamily: Fonts.gilroyMedium,
+                        ),
+                      ),
+                      SizedBox(width: 8),
+                      Icon(Icons.arrow_forward_rounded,
+                          color: Colors.white, size: 26),
+                    ],
+                  ),
+                ),
+              )
             ],
           ),
         ),

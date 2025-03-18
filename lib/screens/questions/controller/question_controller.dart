@@ -3,34 +3,28 @@ import 'dart:convert';
 import 'package:get/get.dart';
 import 'package:http/http.dart' as http;
 import 'package:kahoot_app/screens/results/correct/results_correct_screen.dart';
+import '../../../models/question_next_model.dart';
 import '../../../models/quiz_response.dart';
+import '../../results/incorrect/result_incorrect_screen.dart';
 import '../../waiting_screen/controller/waiting_controller.dart';
 
 class QuestionController extends GetxController {
   final QuizResponse quizResponse;
 
-  QuestionController({
-    required this.quizResponse,
-  });
+  QuestionController({required this.quizResponse});
 
   String baseUrl = "https://quiz.kamilbilim.com/api";
   RxBool isAnswered = false.obs;
   RxInt timeSpent = 0.obs;
   late Timer _timer;
   RxBool isLoading = true.obs;
+  Rx<Question?> currentQuestion = Rx<Question?>(null);
 
   final WaitingScreenController waitingScreenController =
       Get.put(WaitingScreenController());
 
-  @override
-  void onInit() async {
-    super.onInit();
-    timeSpent.value = waitingScreenController.questionsData[0].timeLimiter;
-    _startTimer();
-  }
-
-  void _startTimer() {
-    timeSpent.value = waitingScreenController.questionsData[0].timeLimiter;
+  void _startTimer(int duration) {
+    timeSpent.value = duration;
     _timer = Timer.periodic(const Duration(seconds: 1), (timer) {
       if (timeSpent.value > 0) {
         timeSpent.value--;
@@ -47,6 +41,45 @@ class QuestionController extends GetxController {
     }
   }
 
+  Future<void> onAnswerSelected(int selectedIndex) async {
+    if (!isAnswered.value && currentQuestion.value != null) {
+      isAnswered.value = true;
+      _timer.cancel();
+
+      String userAnswer = "q${selectedIndex + 1}";
+      try {
+        final response = await postAnswer(
+          participantId: quizResponse.id,
+          questionId: currentQuestion.value!.questionID,
+          userAnswer: userAnswer,
+          timeSpent: currentQuestion.value!.timeLimiter - timeSpent.value,
+        );
+        final isCorrect = response['isCorrect'];
+        final scoreques = response['score'];
+        final message = response['message'];
+        print('AnswerSelec $timeSpent');
+
+        if (isCorrect) {
+          Get.off(() => ResultCorrectScreen(
+                questionID: currentQuestion.value!.questionID,
+                score: scoreques,
+                message: message,
+                quizResponse: quizResponse,
+              ));
+        } else {
+          Get.off(() => ResultIncorrectScreen(
+                questionID: currentQuestion.value!.questionID,
+                score: scoreques,
+                message: message,
+                quizResponse: quizResponse,
+              ));
+        }
+      } catch (e) {
+        Get.snackbar('Error', 'Error submitting answer: $e');
+      }
+    }
+  }
+
   Future<Map<String, dynamic>> postAnswer({
     required int participantId,
     required int questionId,
@@ -55,70 +88,32 @@ class QuestionController extends GetxController {
   }) async {
     try {
       var headers = {'Content-Type': 'application/json'};
-      var request = http.MultipartRequest(
-        'POST',
+      var response = await http.post(
         Uri.parse('$baseUrl/answers'),
+        headers: headers,
+        body: jsonEncode({
+          'participantsID': participantId,
+          'questionsID': questionId,
+          'userAnswer': userAnswer,
+          'timeSpent': timeSpent,
+        }),
       );
+      print('POST $timeSpent');
 
-      request.fields.addAll({
-        'participantsID': participantId.toString(),
-        'questionsID': questionId.toString(),
-        'userAnswer': userAnswer,
-        'timeSpent': timeSpent.toString(),
-      });
-      request.headers.addAll(headers);
-
-      var response = await request.send();
-      var responseBody = await response.stream.bytesToString();
       if (response.statusCode == 200 || response.statusCode == 201) {
-        return jsonDecode(responseBody);
+        return jsonDecode(response.body);
       } else {
-        var errorResponse = jsonDecode(responseBody);
-        String errorMessage = errorResponse['errorMessage'] ?? 'Unknown error';
-
-        throw Exception(errorMessage);
+        throw Exception('Failed to submit answer');
       }
     } catch (e) {
       throw Exception(e.toString());
     }
   }
 
-  Future<void> onAnswerSelected(int selectedIndex) async {
-    if (!isAnswered.value) {
-      isAnswered.value = true;
-      _timer.cancel();
-      String userAnswer = "q${selectedIndex + 1}";
-
-      try {
-        final response = await postAnswer(
-          participantId: quizResponse.id,
-          questionId: waitingScreenController.questionsData[0].questionID,
-          userAnswer: userAnswer,
-          timeSpent: timeSpent.value,
-        );
-
-        final isCorrect = response['isCorrect'];
-        final scoreques = response['score'];
-        final message = response['message'];
-
-        if (isCorrect) {
-          Get.offAll(() => ResultCorrectScreen(
-                score: scoreques,
-                message: message,
-                quizResponse: quizResponse,
-              ));
-        } else {
-          // Get.offAll(() => ResultIncorrectScreen(
-          //       score: scoreques,
-          //       nickname: quizResponse.nickname,
-          //       message: message,
-          //     ));
-        }
-      } catch (e) {
-        print('erorrr $e');
-        Get.snackbar('Error', 'Error submitting answer: $e',
-            snackPosition: SnackPosition.BOTTOM);
-      }
+  void loadQuestions(List<Question> questions) {
+    if (questions.isNotEmpty) {
+      currentQuestion.value = questions.first;
+      _startTimer(currentQuestion.value!.timeLimiter);
     }
   }
 

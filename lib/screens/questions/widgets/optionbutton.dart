@@ -40,7 +40,7 @@ Widget buildOptionButton(String optionText, bool isCorrect, Color color,
           transform: Matrix4.translationValues(translationX.value, 0, 0),
           decoration: BoxDecoration(
             color: color,
-            borderRadius: BorderRadius.circular(20),
+            borderRadius: BorderRadii.borderRadius20,
             boxShadow: isTapped.value
                 ? [
                     BoxShadow(
@@ -72,7 +72,7 @@ Widget buildOptionButton(String optionText, bool isCorrect, Color color,
                   optionText,
                   style: const TextStyle(
                     fontSize: 20,
-                    color: Colors.white,
+                    color: AppColors.white,
                     fontFamily: Fonts.gilroyBold,
                   ),
                   textAlign: TextAlign.center,

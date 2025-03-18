@@ -4,10 +4,11 @@ import '../../../config/constants/constants.dart';
 
 class BottomNavBarName extends StatelessWidget {
   final String nickname;
-
+  final int score;
   const BottomNavBarName({
     super.key,
     required this.nickname,
+    required this.score,
   });
 
   @override
@@ -51,9 +52,9 @@ class BottomNavBarName extends StatelessWidget {
             children: [
               Image.asset('assets/images/star.png'),
               const SizedBox(width: 10),
-              const Text(
-                'dfgdfg',
-                style: TextStyle(
+              Text(
+                score.toString(),
+                style: const TextStyle(
                   color: AppColors.white,
                   fontSize: 20.0,
                   fontFamily: Fonts.gilroyBold,

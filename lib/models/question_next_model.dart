@@ -22,7 +22,7 @@ class Question {
       questionID: json['questionID'],
       questionText: json['questionText'],
       timeLimiter: json['timeLimiter'],
-      isAnswered: json['isAnswered'], 
+      isAnswered: json['isAnswered'],
     );
   }
 }

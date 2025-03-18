@@ -19,21 +19,32 @@ class QuestionScreen extends StatelessWidget {
 
   final WaitingScreenController waitingScreenController =
       Get.put(WaitingScreenController());
-  final QuestionController questionController = Get.find();
+
   @override
   Widget build(BuildContext context) {
     final double screenHeight = MediaQuery.of(context).size.height;
     final double screenWidth = MediaQuery.of(context).size.width;
-
+    final QuestionController questionController =
+        Get.put(QuestionController(quizResponse: quizResponse));
     return Scaffold(
       appBar: AppBar(
         automaticallyImplyLeading: false,
         backgroundColor: AppColors.background,
-        title: AppBarTitle(
-          id: waitingScreenController.questionsData[0].questionID,
-          timeLimiter: waitingScreenController.questionsData[0].timeLimiter,
-          avatar: quizResponse.avatar,
-        ),
+        title: Obx(() {
+          final question = questionController.currentQuestion.value;
+          if (question == null) {
+            return const Text(
+              "Loading...",
+              style: TextStyle(
+                  color: AppColors.white, fontFamily: Fonts.gilroyMedium),
+            );
+          }
+          return AppBarTitle(
+              id: question.questionID,
+              timeLimiter: questionController.timeSpent.value.toInt(),
+              avatar: quizResponse.avatar,
+              questionColumn: quizResponse.questionCount);
+        }),
       ),
       backgroundColor: AppColors.background,
       body: Padding(
@@ -41,55 +52,58 @@ class QuestionScreen extends StatelessWidget {
           horizontal: screenWidth * 0.05,
           vertical: screenHeight * 0.02,
         ),
-        child: Column(
-          children: [
-            SizedBox(
-              height: screenHeight * 0.15,
-              child: Center(
-                child: Obx(() => Text(
-                      waitingScreenController.questionsData[0].questionText,
-                      style: TextStyle(
-                        fontSize: screenWidth * 0.06,
-                        fontFamily: Fonts.gilroyBold,
-                        color: AppColors.white,
-                      ),
-                      textAlign: TextAlign.center,
-                    )),
-              ),
-            ),
-            Expanded(
-              child: Obx(() => GridView.builder(
-                    gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
-                      crossAxisCount: 2,
-                      mainAxisSpacing: screenHeight * 0.015,
-                      crossAxisSpacing: screenWidth * 0.03,
-                      childAspectRatio: 1,
+        child: Obx(() {
+          final question = questionController.currentQuestion.value;
+          if (question == null) {
+            return const Center(
+              child: CircularProgressIndicator(color: Colors.white),
+            );
+          }
+          return Column(
+            children: [
+              SizedBox(
+                height: screenHeight * 0.15,
+                child: Center(
+                  child: Text(
+                    question.questionText,
+                    style: TextStyle(
+                      fontSize: screenWidth * 0.06,
+                      fontFamily: Fonts.gilroyBold,
+                      color: AppColors.white,
                     ),
-                    itemCount:
-                        waitingScreenController.questionsData[0].options.length,
-                    itemBuilder: (context, index) {
-                      final option = waitingScreenController
-                          .questionsData[0].options[index];
-                      final isCorrect = option ==
-                          waitingScreenController
-                              .questionsData[0].correctAnswer;
-
-                      return buildOptionButton(
-                        option,
-                        isCorrect,
-                        colors[index % 4],
-                        index,
-                        questionController,
-                      );
-                    },
-                  )),
-            ),
-          ],
-        ),
+                    textAlign: TextAlign.center,
+                  ),
+                ),
+              ),
+              Expanded(
+                child: GridView.builder(
+                  gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
+                    crossAxisCount: 2,
+                    mainAxisSpacing: screenHeight * 0.015,
+                    crossAxisSpacing: screenWidth * 0.03,
+                    childAspectRatio: 1,
+                  ),
+                  itemCount: question.options.length,
+                  itemBuilder: (context, index) {
+                    final option = question.options[index];
+                    return buildOptionButton(
+                      option,
+                      option == question.correctAnswer,
+                      colors[index % 4],
+                      index,
+                      questionController,
+                    );
+                  },
+                ),
+              ),
+            ],
+          );
+        }),
       ),
       bottomNavigationBar: BottomAppBar(
         color: AppColors.background,
         child: BottomNavBarName(
+          score: quizResponse.score,
           nickname: quizResponse.nickname,
         ),
       ),

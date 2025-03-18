@@ -1,12 +1,12 @@
 import 'package:flutter/material.dart';
 
 import '../../config/constants/constants.dart';
+import '../../models/quiz_response.dart';
 
 class ReitingScreen extends StatelessWidget {
-  const ReitingScreen({super.key, required this.score, required this.nickname});
-  final int score;
-  final String nickname;
+  const ReitingScreen({super.key, required this.quizResponse});
 
+  final QuizResponse quizResponse;
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -23,7 +23,7 @@ class ReitingScreen extends StatelessWidget {
               margin: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
               decoration: BoxDecoration(
                 color: Colors.grey[100]!,
-                borderRadius: BorderRadius.circular(12),
+                borderRadius: BorderRadii.borderRadius20,
               ),
             );
           }),

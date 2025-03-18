@@ -1,22 +1,25 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/svg.dart';
 import 'package:get/get.dart';
-import 'package:kahoot_app/models/question_next_model.dart';
+import 'package:kahoot_app/config/constants/constants.dart';
 
-import '../../questions/controller/question_controller.dart';
+import '../../../models/quiz_response.dart';
+import '../../reiting/reiting_screen.dart';
+import '../../waiting_screen/controller/waiting_controller.dart';
 
 class ResultIncorrectScreen extends StatefulWidget {
   const ResultIncorrectScreen({
     super.key,
-    required this.nickname,
     required this.score,
-    required this.message, required List<Question> questionsr, required int quizIDr, required int scoreqr, required String nicknamer, required String avatarr, required int idr, required int questionCountr,
+    required this.message,
+    required this.quizResponse,
+    required this.questionID,
   });
 
   final int score;
-  final String nickname;
   final String message;
-
+  final QuizResponse quizResponse;
+  final int questionID;
   @override
   // ignore: library_private_types_in_public_api
   _ResultIncorrectScreenState createState() => _ResultIncorrectScreenState();
@@ -47,6 +50,8 @@ class _ResultIncorrectScreenState extends State<ResultIncorrectScreen>
     super.dispose();
   }
 
+  final WaitingScreenController waitingController = Get.find();
+
   @override
   Widget build(BuildContext context) {
     return AnimatedBuilder(
@@ -64,7 +69,7 @@ class _ResultIncorrectScreenState extends State<ResultIncorrectScreen>
                     "Incorrect",
                     style: TextStyle(
                       color: Colors.white,
-                      fontFamily: 'GilroyBold',
+                      fontFamily: Fonts.gilroyBold,
                       fontSize: 36,
                       fontWeight: FontWeight.bold,
                     ),
@@ -95,29 +100,63 @@ class _ResultIncorrectScreenState extends State<ResultIncorrectScreen>
                     style: const TextStyle(
                       color: Colors.white,
                       fontSize: 24,
-                      fontFamily: 'GilroyMedium',
+                      fontFamily: Fonts.gilroyMedium,
                     ),
                     textAlign: TextAlign.center,
                   ),
-                  const SizedBox(height: 10),
-                  Text(
-                    '+${widget.score.toString()}',
-                    style: const TextStyle(
-                      color: Colors.white,
-                      fontSize: 28,
-                      fontFamily: 'GilroyMedium',
-                      fontWeight: FontWeight.bold,
-                    ),
-                  ),
                   const SizedBox(height: 20),
-                  // ElevatedButton(
-                  //   onPressed: () async {
-                  //     final QuestionController controller = Get.find();
-                  //     await controller.fetchNextQuestion();
-                  //     Get.back();
-                  //   },
-                  //   child: const Text('Next Question'),
-                  // ),
+                  GestureDetector(
+                    onTap: () async {
+                      if (widget.quizResponse.questionCount ==
+                          widget.questionID) {
+                        Get.to(ReitingScreen(
+                          quizResponse: widget.quizResponse,
+                        ));
+                      } else {
+                        (await waitingController
+                            .fetchQuestions(widget.quizResponse));
+                      }
+                    },
+                    child: AnimatedContainer(
+                      duration: const Duration(milliseconds: 300),
+                      width: 180,
+                      height: 60,
+                      decoration: BoxDecoration(
+                        gradient: const LinearGradient(
+                          colors: [
+                            Color.fromARGB(255, 237, 22, 6),
+                            Color.fromARGB(255, 245, 78, 78)
+                          ],
+                          begin: Alignment.topLeft,
+                          end: Alignment.bottomRight,
+                        ),
+                        borderRadius: BorderRadii.borderRadius15,
+                        boxShadow: [
+                          BoxShadow(
+                            color: Colors.black.withOpacity(0.3),
+                            blurRadius: 10,
+                            offset: const Offset(0, 5),
+                          ),
+                        ],
+                      ),
+                      child: const Row(
+                        mainAxisAlignment: MainAxisAlignment.center,
+                        children: [
+                          Text(
+                            "Next",
+                            style: TextStyle(
+                              color: Colors.white,
+                              fontSize: 22,
+                              fontFamily: Fonts.gilroyBold,
+                            ),
+                          ),
+                          SizedBox(width: 8),
+                          Icon(Icons.arrow_forward_rounded,
+                              color: Colors.white, size: 26),
+                        ],
+                      ),
+                    ),
+                  )
                 ],
               ),
             ),

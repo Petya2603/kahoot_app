@@ -9,10 +9,6 @@ class Assets {
   static const String pencil = 'assets/images/pencil.png';
   static const String check = 'assets/images/check.png';
 
-  // Icons
-  // static const String logo = 'assets/icons/flash-on.svg';
-  // static const String download = 'assets/icons/Icon.svg';
-  // static const String downloadMusic = 'assets/images/music.png';
 }
 
 class Fonts {

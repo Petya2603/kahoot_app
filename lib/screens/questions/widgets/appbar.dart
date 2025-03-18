@@ -10,17 +10,19 @@ class AppBarTitle extends StatelessWidget {
     required this.id,
     required this.timeLimiter,
     required this.avatar,
+    required this.questionColumn,
   });
 
   final int id;
   final int timeLimiter;
   final String avatar;
+  final int questionColumn;
 
   @override
   Widget build(BuildContext context) {
     final TimerController timerController =
         Get.put(TimerController(timeLimiter));
-
+    final progresValue = timerController.timelimiter / timeLimiter;
     return Container(
       padding: const EdgeInsets.only(left: 10, right: 10),
       child: Row(
@@ -37,34 +39,21 @@ class AppBarTitle extends StatelessWidget {
                 alignment: Alignment.centerRight,
                 children: [
                   ClipRRect(
-                    borderRadius: BorderRadius.circular(10),
-                    child: Obx(
-                      () => LinearProgressIndicator(
-                        value: timerController.timelimiter.toDouble() /
-                            timeLimiter,
-                        backgroundColor: Colors.white,
-                        valueColor: const AlwaysStoppedAnimation<Color>(
-                            AppColors.orange),
-                        minHeight: 8,
-                      ),
-                    ),
-                  ),
-                  Obx(
-                    () => Container(
-                      padding: const EdgeInsets.all(6),
-                      decoration: BoxDecoration(
-                        color: AppColors.orange,
-                        shape: BoxShape.circle,
-                        border: Border.all(color: Colors.white),
-                      ),
-                      child: Text(
-                        "${timerController.timelimiter} s",
-                        style: const TextStyle(
-                          color: AppColors.white,
-                          fontSize: 14,
-                          fontFamily: Fonts.gilroyBold,
-                        ),
-                      ),
+                    borderRadius: BorderRadii.borderRadius10,
+                    child: Builder(
+                      builder: (context) {
+                        var progressValue = progresValue;
+                        if (progressValue.isNaN || progressValue.isInfinite) {
+                          progressValue = 0.0;
+                        }
+                        return LinearProgressIndicator(
+                          value: progressValue,
+                          backgroundColor: Colors.white,
+                          valueColor: const AlwaysStoppedAnimation<Color>(
+                              AppColors.orange),
+                          minHeight: 8,
+                        );
+                      },
                     ),
                   ),
                 ],
@@ -75,7 +64,7 @@ class AppBarTitle extends StatelessWidget {
             crossAxisAlignment: CrossAxisAlignment.end,
             children: [
               Text(
-                "20 / $id",
+                "$questionColumn / $id",
                 style: const TextStyle(
                   color: AppColors.white,
                   fontSize: 18,

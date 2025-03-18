@@ -1,4 +1,3 @@
-
 // ignore_for_file: file_names
 
 import 'dart:async';
@@ -6,7 +5,7 @@ import 'dart:async';
 import 'package:get/get.dart';
 
 class TimerController extends GetxController {
-  var timelimiter = 0.obs;
+  RxInt timelimiter = 0.obs;
 
   TimerController(int initialTime) {
     timelimiter.value = initialTime;

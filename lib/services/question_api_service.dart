@@ -10,7 +10,6 @@ class ApiServiceQuestion {
       Uri.parse('$baseUrl/questions_next?quizID=$quizId'),
     );
     if (response.statusCode == 200) {
-      print('API ${response.body}');
       final dynamic jsonData = jsonDecode(response.body);
 
       if (jsonData is List) {

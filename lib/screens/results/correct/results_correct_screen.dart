@@ -3,8 +3,8 @@ import 'package:flutter_svg/flutter_svg.dart';
 import 'package:get/get.dart';
 import '../../../config/constants/constants.dart';
 import '../../../models/quiz_response.dart';
-import '../../reiting/reiting_screen.dart';
 import '../../waiting_screen/controller/waiting_controller.dart';
+import '../widgets/next_button.dart';
 
 class ResultCorrectScreen extends StatefulWidget {
   final int score;
@@ -25,6 +25,7 @@ class ResultCorrectScreen extends StatefulWidget {
 
 class _ResultCorrectScreenState extends State<ResultCorrectScreen> {
   final WaitingScreenController waitingController = Get.find();
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -85,58 +86,12 @@ class _ResultCorrectScreenState extends State<ResultCorrectScreen> {
                 ),
               ),
               const SizedBox(height: 20),
-              GestureDetector(
-                onTap: () async {
-                  if (widget.quizResponse.questionCount == widget.questionID) {
-                    Get.to(ReitingScreen(
-                      quizResponse: widget.quizResponse,
-                    ));
-                  } else {
-                    (await waitingController
-                        .fetchQuestions(widget.quizResponse));
-                  }
-                },
-                child: AnimatedContainer(
-                  duration: const Duration(milliseconds: 300),
-                  width: 180,
-                  height: 60,
-                  decoration: BoxDecoration(
-                    gradient: const LinearGradient(
-                      colors: [
-                        Color.fromARGB(255, 0, 206, 7),
-                        Color(0xFFB2FF59)
-                      ],
-                      begin: Alignment.topLeft,
-                      end: Alignment.bottomRight,
-                    ),
-                    borderRadius: BorderRadii.borderRadius15,
-                    boxShadow: [
-                      BoxShadow(
-                        color: Colors.black.withOpacity(0.3),
-                        blurRadius: 10,
-                        offset: const Offset(0, 5),
-                      ),
-                    ],
-                  ),
-                  child: const Row(
-                    mainAxisAlignment: MainAxisAlignment.center,
-                    children: [
-                      Text(
-                        "Next",
-                        style: TextStyle(
-                          color: Colors.white,
-                          fontSize: 22,
-                          fontWeight: FontWeight.bold,
-                          fontFamily: Fonts.gilroyMedium,
-                        ),
-                      ),
-                      SizedBox(width: 8),
-                      Icon(Icons.arrow_forward_rounded,
-                          color: Colors.white, size: 26),
-                    ],
-                  ),
-                ),
-              )
+              NextButton(
+                quizResponse: widget.quizResponse,
+                questionID: widget.questionID,
+                startColor: const Color.fromARGB(255, 0, 206, 7),
+                endColor: const Color(0xFFB2FF59),
+              ),
             ],
           ),
         ),

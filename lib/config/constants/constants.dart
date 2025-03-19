@@ -8,7 +8,6 @@ class Assets {
   static const String right = 'assets/images/right.png';
   static const String pencil = 'assets/images/pencil.png';
   static const String check = 'assets/images/check.png';
-
 }
 
 class Fonts {
@@ -48,6 +47,7 @@ class AppColors {
   static const Color red = Color.fromRGBO(173, 38, 41, 1);
   static const Color black = Color.fromRGBO(36, 35, 35, 1);
   static const Color yellow = Color.fromRGBO(237, 248, 21, 1);
+  static const Color gold = Color.fromRGBO(255, 255, 0, 1);
 }
 
 List<Color> colors = [

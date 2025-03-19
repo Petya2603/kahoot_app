@@ -10,7 +10,6 @@ import '../../waiting_screen/controller/waiting_controller.dart';
 
 class QuestionController extends GetxController {
   final QuizResponse quizResponse;
-
   QuestionController({required this.quizResponse});
 
   String baseUrl = "https://quiz.kamilbilim.com/api";
@@ -35,48 +34,67 @@ class QuestionController extends GetxController {
     });
   }
 
-  void _onTimeOut() {
+  void _stopTimer() {
+    if (_timer.isActive) {
+      _timer.cancel();
+    }
+  }
+
+  void _onTimeOut() async {
     if (!isAnswered.value) {
       isAnswered.value = true;
+      _stopTimer();
+      await _submitAnswer("0", currentQuestion.value!.timeLimiter);
+      String message = "Time's up!";
+      Get.off(() => ResultIncorrectScreen(
+            questionID: currentQuestion.value!.questionID,
+            score: quizResponse.score,
+            message: message,
+            quizResponse: quizResponse,
+          ));
     }
   }
 
   Future<void> onAnswerSelected(int selectedIndex) async {
     if (!isAnswered.value && currentQuestion.value != null) {
       isAnswered.value = true;
-      _timer.cancel();
-
+      _stopTimer();
       String userAnswer = "q${selectedIndex + 1}";
-      try {
-        final response = await postAnswer(
-          participantId: quizResponse.id,
-          questionId: currentQuestion.value!.questionID,
-          userAnswer: userAnswer,
-          timeSpent: currentQuestion.value!.timeLimiter - timeSpent.value,
-        );
-        final isCorrect = response['isCorrect'];
-        final scoreques = response['score'];
-        final message = response['message'];
-        print('AnswerSelec $timeSpent');
+      await _submitAnswer(
+          userAnswer, currentQuestion.value!.timeLimiter - timeSpent.value);
+    }
+  }
 
-        if (isCorrect) {
-          Get.off(() => ResultCorrectScreen(
-                questionID: currentQuestion.value!.questionID,
-                score: scoreques,
-                message: message,
-                quizResponse: quizResponse,
-              ));
-        } else {
-          Get.off(() => ResultIncorrectScreen(
-                questionID: currentQuestion.value!.questionID,
-                score: scoreques,
-                message: message,
-                quizResponse: quizResponse,
-              ));
-        }
-      } catch (e) {
-        Get.snackbar('Error', 'Error submitting answer: $e');
+  Future<void> _submitAnswer(String userAnswer, int timeSpent) async {
+    try {
+      final response = await postAnswer(
+        participantId: quizResponse.id,
+        questionId: currentQuestion.value!.questionID,
+        userAnswer: userAnswer,
+        timeSpent: timeSpent,
+      );
+      final isCorrect = response['isCorrect'];
+      final scoreques = response['score'];
+      final message = response['message'];
+      quizResponse.score = scoreques;
+
+      if (isCorrect) {
+        Get.off(() => ResultCorrectScreen(
+              questionID: currentQuestion.value!.questionID,
+              score: scoreques,
+              message: message,
+              quizResponse: quizResponse,
+            ));
+      } else {
+        Get.off(() => ResultIncorrectScreen(
+              questionID: currentQuestion.value!.questionID,
+              score: scoreques,
+              message: message,
+              quizResponse: quizResponse,
+            ));
       }
+    } catch (e) {
+      Get.snackbar('Error', 'Error submitting answer: $e');
     }
   }
 
@@ -98,7 +116,6 @@ class QuestionController extends GetxController {
           'timeSpent': timeSpent,
         }),
       );
-      print('POST $timeSpent');
 
       if (response.statusCode == 200 || response.statusCode == 201) {
         return jsonDecode(response.body);
@@ -113,13 +130,14 @@ class QuestionController extends GetxController {
   void loadQuestions(List<Question> questions) {
     if (questions.isNotEmpty) {
       currentQuestion.value = questions.first;
+      isAnswered.value = false;
       _startTimer(currentQuestion.value!.timeLimiter);
     }
   }
 
   @override
   void onClose() {
-    _timer.cancel();
+    _stopTimer();
     super.onClose();
   }
 }

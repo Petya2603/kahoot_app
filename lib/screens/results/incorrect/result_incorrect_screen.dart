@@ -1,11 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/svg.dart';
-import 'package:get/get.dart';
 import 'package:kahoot_app/config/constants/constants.dart';
-
 import '../../../models/quiz_response.dart';
-import '../../reiting/reiting_screen.dart';
-import '../../waiting_screen/controller/waiting_controller.dart';
+import '../widgets/next_button.dart';
 
 class ResultIncorrectScreen extends StatefulWidget {
   const ResultIncorrectScreen({
@@ -20,12 +17,12 @@ class ResultIncorrectScreen extends StatefulWidget {
   final String message;
   final QuizResponse quizResponse;
   final int questionID;
+
   @override
-  // ignore: library_private_types_in_public_api
-  _ResultIncorrectScreenState createState() => _ResultIncorrectScreenState();
+  ResultIncorrectScreenState createState() => ResultIncorrectScreenState();
 }
 
-class _ResultIncorrectScreenState extends State<ResultIncorrectScreen>
+class ResultIncorrectScreenState extends State<ResultIncorrectScreen>
     with SingleTickerProviderStateMixin {
   late AnimationController _controller;
   late Animation<Color?> _colorAnimation;
@@ -33,15 +30,11 @@ class _ResultIncorrectScreenState extends State<ResultIncorrectScreen>
   @override
   void initState() {
     super.initState();
-    _controller = AnimationController(
-      vsync: this,
-      duration: const Duration(seconds: 1),
-    )..repeat(reverse: true);
-
-    _colorAnimation = ColorTween(
-      begin: Colors.red[200],
-      end: Colors.red[400],
-    ).animate(_controller);
+    _controller =
+        AnimationController(vsync: this, duration: const Duration(seconds: 1))
+          ..repeat(reverse: true);
+    _colorAnimation = ColorTween(begin: Colors.red[200], end: Colors.red[400])
+        .animate(_controller);
   }
 
   @override
@@ -49,8 +42,6 @@ class _ResultIncorrectScreenState extends State<ResultIncorrectScreen>
     _controller.dispose();
     super.dispose();
   }
-
-  final WaitingScreenController waitingController = Get.find();
 
   @override
   Widget build(BuildContext context) {
@@ -105,58 +96,12 @@ class _ResultIncorrectScreenState extends State<ResultIncorrectScreen>
                     textAlign: TextAlign.center,
                   ),
                   const SizedBox(height: 20),
-                  GestureDetector(
-                    onTap: () async {
-                      if (widget.quizResponse.questionCount ==
-                          widget.questionID) {
-                        Get.to(ReitingScreen(
-                          quizResponse: widget.quizResponse,
-                        ));
-                      } else {
-                        (await waitingController
-                            .fetchQuestions(widget.quizResponse));
-                      }
-                    },
-                    child: AnimatedContainer(
-                      duration: const Duration(milliseconds: 300),
-                      width: 180,
-                      height: 60,
-                      decoration: BoxDecoration(
-                        gradient: const LinearGradient(
-                          colors: [
-                            Color.fromARGB(255, 237, 22, 6),
-                            Color.fromARGB(255, 245, 78, 78)
-                          ],
-                          begin: Alignment.topLeft,
-                          end: Alignment.bottomRight,
-                        ),
-                        borderRadius: BorderRadii.borderRadius15,
-                        boxShadow: [
-                          BoxShadow(
-                            color: Colors.black.withOpacity(0.3),
-                            blurRadius: 10,
-                            offset: const Offset(0, 5),
-                          ),
-                        ],
-                      ),
-                      child: const Row(
-                        mainAxisAlignment: MainAxisAlignment.center,
-                        children: [
-                          Text(
-                            "Next",
-                            style: TextStyle(
-                              color: Colors.white,
-                              fontSize: 22,
-                              fontFamily: Fonts.gilroyBold,
-                            ),
-                          ),
-                          SizedBox(width: 8),
-                          Icon(Icons.arrow_forward_rounded,
-                              color: Colors.white, size: 26),
-                        ],
-                      ),
-                    ),
-                  )
+                  NextButton(
+                    quizResponse: widget.quizResponse,
+                    questionID: widget.questionID,
+                    startColor: const Color.fromARGB(255, 237, 22, 6),
+                    endColor: const Color.fromARGB(255, 245, 78, 78),
+                  ),
                 ],
               ),
             ),

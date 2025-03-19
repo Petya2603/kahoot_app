@@ -4,7 +4,7 @@ import 'package:get/get.dart';
 import '../../../config/constants/constants.dart';
 import '../controller/timeController.dart';
 
-class AppBarTitle extends StatelessWidget {
+class AppBarTitle extends StatefulWidget {
   const AppBarTitle({
     super.key,
     required this.id,
@@ -19,17 +19,34 @@ class AppBarTitle extends StatelessWidget {
   final int questionColumn;
 
   @override
+  State<AppBarTitle> createState() => _AppBarTitleState();
+}
+
+class _AppBarTitleState extends State<AppBarTitle> {
+  late TimerController timerController;
+
+  @override
+  void initState() {
+    super.initState();
+    timerController = Get.put(TimerController(widget.timeLimiter));
+    timerController.startTimer(); // Timer'ı başlat
+  }
+
+  @override
+  void dispose() {
+    timerController.stopTimer(); // Timer'ı durdur
+    super.dispose();
+  }
+
+  @override
   Widget build(BuildContext context) {
-    final TimerController timerController =
-        Get.put(TimerController(timeLimiter));
-    final progresValue = timerController.timelimiter / timeLimiter;
     return Container(
       padding: const EdgeInsets.only(left: 10, right: 10),
       child: Row(
         mainAxisAlignment: MainAxisAlignment.spaceBetween,
         children: [
           CircleAvatar(
-            backgroundImage: NetworkImage(avatar),
+            backgroundImage: NetworkImage(widget.avatar), // avatar'ı kontrol et
             radius: 25,
           ),
           Expanded(
@@ -40,21 +57,47 @@ class AppBarTitle extends StatelessWidget {
                 children: [
                   ClipRRect(
                     borderRadius: BorderRadii.borderRadius10,
-                    child: Builder(
-                      builder: (context) {
-                        var progressValue = progresValue;
-                        if (progressValue.isNaN || progressValue.isInfinite) {
-                          progressValue = 0.0;
-                        }
-                        return LinearProgressIndicator(
-                          value: progressValue,
-                          backgroundColor: Colors.white,
-                          valueColor: const AlwaysStoppedAnimation<Color>(
-                              AppColors.orange),
-                          minHeight: 8,
-                        );
-                      },
-                    ),
+                    child: Obx(() {
+                      var remainingTime = timerController.timelimiter.value;
+                      var totalTime =
+                          widget.timeLimiter; // totalTime sabit kalmalı
+
+                      // totalTime sıfırsa veya geçersizse, progressValue'yu 0.0 yap
+                      var progressValue =
+                          (totalTime > 0) ? (remainingTime / totalTime) : 0.0;
+
+                      // progressValue'yu 0.0 ile 1.0 arasında sınırla
+                      if (progressValue > 1.0) {
+                        progressValue = 1.0;
+                      } else if (progressValue < 0.0) {
+                        progressValue = 0.0;
+                      }
+
+                      print("Remaining Time: $remainingTime");
+                      print("Total Time: $totalTime");
+                      print("Progress Value: $progressValue"); // Konsola yazdır
+
+                      Color progressColor;
+                      if (remainingTime > 10) {
+                        progressColor = AppColors.orange;
+                      } else if (remainingTime > 5) {
+                        progressColor = const Color.fromARGB(255, 205, 70, 47);
+                      } else if (remainingTime > 2) {
+                        progressColor = AppColors.red;
+                      } else {
+                        progressColor = AppColors.white;
+                      }
+
+                      print("Progress Color: $progressColor"); // Konsola yazdır
+
+                      return LinearProgressIndicator(
+                        value: progressValue,
+                        backgroundColor: Colors.white,
+                        valueColor:
+                            AlwaysStoppedAnimation<Color>(progressColor),
+                        minHeight: 8,
+                      );
+                    }),
                   ),
                 ],
               ),
@@ -64,7 +107,7 @@ class AppBarTitle extends StatelessWidget {
             crossAxisAlignment: CrossAxisAlignment.end,
             children: [
               Text(
-                "$questionColumn / $id",
+                "${widget.questionColumn} / ${widget.id}",
                 style: const TextStyle(
                   color: AppColors.white,
                   fontSize: 18,
@@ -83,14 +126,14 @@ class AppBarTitle extends StatelessWidget {
                         AppColors.white, BlendMode.srcIn),
                   ),
                   const SizedBox(width: 5),
-                  Text(
-                    "${timeLimiter}s",
-                    style: const TextStyle(
-                      color: AppColors.white,
-                      fontSize: 14,
-                      fontFamily: Fonts.gilroyRegular,
-                    ),
-                  ),
+                  Obx(() => Text(
+                        "${timerController.timelimiter}s",
+                        style: const TextStyle(
+                          color: AppColors.white,
+                          fontSize: 14,
+                          fontFamily: Fonts.gilroyRegular,
+                        ),
+                      )),
                 ],
               ),
             ],
